@@ -4,7 +4,9 @@ rust:
   - 1.17.0
 
 install:
-- sudo apt-get install protobuf-compiler
+- apt-get install protobuf-compiler
 
 script:
 - make all
+
+dist: trusty

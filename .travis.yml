@@ -4,9 +4,11 @@ rust:
   - 1.17.0
 
 install:
-- sudo apt-get update && sudo apt-get install -y protobuf-compiler
-
-sudo: required
+- curl -OL https://github.com/google/protobuf/releases/download/v${PROTO_VERSION}/protoc-${PROTO_VERSION}-linux-x86_64.zip
+- unzip protoc-${PROTO_VERSION}-linux-x86_64.zip -d protoc3
+- mkdir -p $HOME/bin
+- mv protoc3/bin/protoc $HOME/bin/protoc
+- export PATH=$HOME/bin:$PATH
 
 env:
   global:

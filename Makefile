@@ -21,6 +21,6 @@ proto: vendor
 
 vendor: clean
 	mkdir -p vendor && \
-	git clone git@github.com:lyft/envoy-api.git vendor/envoy-api && \
-	git clone git@github.com:googleapis/googleapis.git vendor/googleapis && \
+	git clone https://github.com/lyft/envoy-api.git vendor/envoy-api && \
+	git clone https://github.com/googleapis/googleapis.git vendor/googleapis && \
 	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api

@@ -1,17 +1,19 @@
 
-PROGRAM_NAME ?= consort
+PROGRAM_NAME ?= diplomat
 
 all: setup compile
 
 setup:
-	cargo install protobuf && \
-	cargo install grpc-compiler
+	cargo install --force protobuf && \
+	cargo install --force grpc-compiler && \
+	cargo install --force cargo-watch
 
 compile: proto
 	cargo build -v
 
 clean:
-	rm -rf vendor
+	rm -rf vendor && \
+	rm -rf target
 
 proto: vendor
 	mkdir -p src/envoy && \
@@ -24,3 +26,6 @@ vendor: clean
 	git clone https://github.com/lyft/envoy-api.git vendor/envoy-api && \
 	git clone https://github.com/googleapis/googleapis.git vendor/googleapis && \
 	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api
+
+consul:
+	consul agent -ui -server -advertise 127.0.0.1 -dev -data-dir target

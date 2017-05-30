@@ -1,0 +1,10 @@
+
+language: rust
+rust:
+  - 1.17.0
+
+install:
+- sudo apt-get install protobuf-compiler
+
+script:
+- make all

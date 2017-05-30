@@ -1,6 +1,8 @@
 
 PROGRAM_NAME ?= consort
 
+all: setup compile
+
 setup:
 	cargo install protobuf && \
 	cargo install grpc-compiler

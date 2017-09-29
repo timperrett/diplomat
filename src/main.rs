@@ -3,6 +3,7 @@
 
 mod api;
 mod server;
+mod config;
 
 #[macro_use]
 extern crate log;
@@ -11,9 +12,12 @@ extern crate consul;
 extern crate grpcio;
 extern crate futures;
 extern crate protobuf;
+#[macro_use]
+extern crate serde_derive;
+extern crate toml;
 
 use clap::{Arg, App, SubCommand};
-use consul::{Client};
+use consul::Client as ConsulClient;
 
 fn main() {
     let app = App::new("diplomat")
@@ -27,15 +31,16 @@ fn main() {
 
     // let eds = api::eds::LbEndpoint::new();
 
+    let consul = ConsulClient::new("http://127.0.0.1:8500");
+
     match matches.subcommand() {
         ("eds", Some(_)) => {
-
-            let client = Client::new("http://127.0.0.1:8500");
-            let ips = client.catalog.get_nodes("consul".to_string()).unwrap();
+            let ips = consul.catalog.get_nodes("consul".to_string()).unwrap();
             println!("{:?}", ips);
-
         },
-        // ("serve", Some(_)) => server::
+        ("serve", Some(_)) => {
+            ::server::start();
+        },
         _ => {}
     }
 }

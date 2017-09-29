@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 
-mod envoy;
+mod api;
 
 extern crate clap;
 extern crate consul;

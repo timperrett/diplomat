@@ -3,9 +3,9 @@
 set -e
 
 # generate the mod.rs definition
-ls src/envoy/*.rs | grep -v mod.rs | sed s/\.rs//g | sed s/src\\/envoy\\///g | awk '{print "mod " $1 ";"}' > src/envoy/mod.rs
+ls src/api/*.rs | grep -v mod.rs | sed s/\.rs//g | sed s/src\\/api\\///g | awk '{print "mod " $1 ";"}' > src/api/mod.rs
 
-for f in $(ls src/envoy/*.rs); do
+for f in $(ls src/api/*.rs); do
   echo "==>> patching $f"
   mv "$f" "${f}.bak"
   # add the protobuf crate import

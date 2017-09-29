@@ -25,11 +25,11 @@ clean-full:
 	rm -rf target
 
 proto: vendor
-	mkdir -p src/envoy && \
+	mkdir -p src/api && \
 	cd vendor/envoy-api && \
 	protoc \
-		--rust_out=../../src/envoy \
-		--grpc_out=../../src/envoy \
+		--rust_out=../../src/api \
+		--grpc_out=../../src/api \
 		--plugin=protoc-gen-grpc=`which grpc_rust_plugin` api/*.proto && \
 	cd ../../ && \
 	scripts/proto-fixup

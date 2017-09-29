@@ -1,8 +1,11 @@
 #![allow(unused_imports)]
+#![allow(dead_code)]
 
 mod api;
 mod server;
 
+#[macro_use]
+extern crate log;
 extern crate clap;
 extern crate consul;
 extern crate grpcio;

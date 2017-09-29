@@ -1,5 +1,3 @@
-#![allow(unused_imports)]
-#![warn(unused_variables)]
 
 // use std::sync::Arc;
 // use std::io::Read;
@@ -7,6 +5,7 @@
 // use std::{io, thread};
 
 use api::eds_grpc::{EndpointDiscoveryService};
+use consul::{Client};
 
 #[derive(Clone)]
 struct EDS;

@@ -22,110 +22,92 @@
 // interface
 
 pub trait ListenerDiscoveryService {
-    fn stream_listeners(&self, o: ::grpc::RequestOptions, p: super::lds::ListenerDiscoveryRequest) -> ::grpc::StreamingResponse<super::lds::ListenerDiscoverResponse>;
+    fn stream_listeners(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::discovery::DiscoveryRequest>) -> ::grpc::StreamingResponse<super::discovery::DiscoveryResponse>;
 
-    fn fetch_listeners(&self, o: ::grpc::RequestOptions, p: super::lds::ListenerDiscoveryRequest) -> ::grpc::SingleResponse<super::lds::ListenerDiscoverResponse>;
+    fn fetch_listeners(&self, o: ::grpc::RequestOptions, p: super::discovery::DiscoveryRequest) -> ::grpc::SingleResponse<super::discovery::DiscoveryResponse>;
 }
 
 // client
 
 pub struct ListenerDiscoveryServiceClient {
     grpc_client: ::grpc::Client,
-    method_StreamListeners: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::lds::ListenerDiscoveryRequest, super::lds::ListenerDiscoverResponse>>,
-    method_FetchListeners: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::lds::ListenerDiscoveryRequest, super::lds::ListenerDiscoverResponse>>,
+    method_StreamListeners: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::discovery::DiscoveryRequest, super::discovery::DiscoveryResponse>>,
+    method_FetchListeners: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::discovery::DiscoveryRequest, super::discovery::DiscoveryResponse>>,
 }
 
 impl ListenerDiscoveryServiceClient {
     pub fn with_client(grpc_client: ::grpc::Client) -> Self {
         ListenerDiscoveryServiceClient {
             grpc_client: grpc_client,
-            method_StreamListeners: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+            method_StreamListeners: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                 name: "/envoy.api.v2.ListenerDiscoveryService/StreamListeners".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::ServerStreaming,
+                streaming: ::grpc::rt::GrpcStreaming::Bidi,
                 req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
-            method_FetchListeners: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+            method_FetchListeners: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                 name: "/envoy.api.v2.ListenerDiscoveryService/FetchListeners".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::Unary,
+                streaming: ::grpc::rt::GrpcStreaming::Unary,
                 req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
         }
     }
 
-    pub fn new(host: &str, port: u16, tls: bool, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
-        ::grpc::Client::new(host, port, tls, conf).map(|c| {
+    pub fn new_plain(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
+        ::grpc::Client::new_plain(host, port, conf).map(|c| {
+            ListenerDiscoveryServiceClient::with_client(c)
+        })
+    }
+    pub fn new_tls<C : ::tls_api::TlsConnector>(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
+        ::grpc::Client::new_tls::<C>(host, port, conf).map(|c| {
             ListenerDiscoveryServiceClient::with_client(c)
         })
     }
 }
 
 impl ListenerDiscoveryService for ListenerDiscoveryServiceClient {
-    fn stream_listeners(&self, o: ::grpc::RequestOptions, p: super::lds::ListenerDiscoveryRequest) -> ::grpc::StreamingResponse<super::lds::ListenerDiscoverResponse> {
-        self.grpc_client.call_server_streaming(o, p, self.method_StreamListeners.clone())
+    fn stream_listeners(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::discovery::DiscoveryRequest>) -> ::grpc::StreamingResponse<super::discovery::DiscoveryResponse> {
+        self.grpc_client.call_bidi(o, p, self.method_StreamListeners.clone())
     }
 
-    fn fetch_listeners(&self, o: ::grpc::RequestOptions, p: super::lds::ListenerDiscoveryRequest) -> ::grpc::SingleResponse<super::lds::ListenerDiscoverResponse> {
+    fn fetch_listeners(&self, o: ::grpc::RequestOptions, p: super::discovery::DiscoveryRequest) -> ::grpc::SingleResponse<super::discovery::DiscoveryResponse> {
         self.grpc_client.call_unary(o, p, self.method_FetchListeners.clone())
     }
 }
 
 // server
 
-pub struct ListenerDiscoveryServiceServer {
-    pub grpc_server: ::grpc::Server,
-}
+pub struct ListenerDiscoveryServiceServer;
 
-impl ::std::ops::Deref for ListenerDiscoveryServiceServer {
-    type Target = ::grpc::Server;
-
-    fn deref(&self) -> &Self::Target {
-        &self.grpc_server
-    }
-}
 
 impl ListenerDiscoveryServiceServer {
-    pub fn new<A : ::std::net::ToSocketAddrs, H : ListenerDiscoveryService + 'static + Sync + Send + 'static>(addr: A, conf: ::grpc::ServerConf, h: H) -> Self {
-        let service_definition = ListenerDiscoveryServiceServer::new_service_def(h);
-        ListenerDiscoveryServiceServer {
-            grpc_server: ::grpc::Server::new_plain(addr, conf, service_definition),
-        }
-    }
-
-    pub fn new_pool<A : ::std::net::ToSocketAddrs, H : ListenerDiscoveryService + 'static + Sync + Send + 'static>(addr: A, conf: ::grpc::ServerConf, h: H, cpu_pool: ::futures_cpupool::CpuPool) -> Self {
-        let service_definition = ListenerDiscoveryServiceServer::new_service_def(h);
-        ListenerDiscoveryServiceServer {
-            grpc_server: ::grpc::Server::new_plain_pool(addr, conf, service_definition, cpu_pool),
-        }
-    }
-
-    pub fn new_service_def<H : ListenerDiscoveryService + 'static + Sync + Send + 'static>(handler: H) -> ::grpc::server::ServerServiceDefinition {
+    pub fn new_service_def<H : ListenerDiscoveryService + 'static + Sync + Send + 'static>(handler: H) -> ::grpc::rt::ServerServiceDefinition {
         let handler_arc = ::std::sync::Arc::new(handler);
-        ::grpc::server::ServerServiceDefinition::new(
+        ::grpc::rt::ServerServiceDefinition::new("/envoy.api.v2.ListenerDiscoveryService",
             vec![
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+                ::grpc::rt::ServerMethod::new(
+                    ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                         name: "/envoy.api.v2.ListenerDiscoveryService/StreamListeners".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::ServerStreaming,
+                        streaming: ::grpc::rt::GrpcStreaming::Bidi,
                         req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                         resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                     }),
                     {
                         let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerServerStreaming::new(move |o, p| handler_copy.stream_listeners(o, p))
+                        ::grpc::rt::MethodHandlerBidi::new(move |o, p| handler_copy.stream_listeners(o, p))
                     },
                 ),
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+                ::grpc::rt::ServerMethod::new(
+                    ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                         name: "/envoy.api.v2.ListenerDiscoveryService/FetchListeners".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::Unary,
+                        streaming: ::grpc::rt::GrpcStreaming::Unary,
                         req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                         resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                     }),
                     {
                         let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerUnary::new(move |o, p| handler_copy.fetch_listeners(o, p))
+                        ::grpc::rt::MethodHandlerUnary::new(move |o, p| handler_copy.fetch_listeners(o, p))
                     },
                 ),
             ],

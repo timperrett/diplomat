@@ -11,6 +11,12 @@ setup:
 compile: proto
 	cargo build -v
 
+release: proto
+	cargo build -v --release
+
+run: compile
+	./target/debug/diplomat --help
+
 clean:
 	rm -rf vendor && \
 	rm -rf target
@@ -23,7 +29,7 @@ proto: vendor
 
 vendor: clean
 	mkdir -p vendor && \
-	git clone https://github.com/lyft/envoy-api.git vendor/envoy-api && \
+	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api && \
 	git clone https://github.com/googleapis/googleapis.git vendor/googleapis && \
 	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api
 

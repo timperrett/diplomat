@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = [ "Timothy Perrett" ]
 
 [dependencies]
-grpc            = "0.*"
+grpcio          = "0.1.1"
 protobuf        = "1.*"
 futures         = "0.1"
 futures-cpupool = "0.1"

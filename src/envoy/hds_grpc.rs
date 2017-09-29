@@ -31,31 +31,36 @@ pub trait HealthDiscoveryService {
 
 pub struct HealthDiscoveryServiceClient {
     grpc_client: ::grpc::Client,
-    method_StreamHealthCheck: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::hds::HealthCheckRequestOrEndpointHealthResponse, super::hds::HealthCheckSpecifier>>,
-    method_FetchHealthCheck: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::hds::HealthCheckRequestOrEndpointHealthResponse, super::hds::HealthCheckSpecifier>>,
+    method_StreamHealthCheck: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::hds::HealthCheckRequestOrEndpointHealthResponse, super::hds::HealthCheckSpecifier>>,
+    method_FetchHealthCheck: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::hds::HealthCheckRequestOrEndpointHealthResponse, super::hds::HealthCheckSpecifier>>,
 }
 
 impl HealthDiscoveryServiceClient {
     pub fn with_client(grpc_client: ::grpc::Client) -> Self {
         HealthDiscoveryServiceClient {
             grpc_client: grpc_client,
-            method_StreamHealthCheck: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+            method_StreamHealthCheck: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                 name: "/envoy.api.v2.HealthDiscoveryService/StreamHealthCheck".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::Bidi,
+                streaming: ::grpc::rt::GrpcStreaming::Bidi,
                 req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
-            method_FetchHealthCheck: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+            method_FetchHealthCheck: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                 name: "/envoy.api.v2.HealthDiscoveryService/FetchHealthCheck".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::Unary,
+                streaming: ::grpc::rt::GrpcStreaming::Unary,
                 req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
         }
     }
 
-    pub fn new(host: &str, port: u16, tls: bool, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
-        ::grpc::Client::new(host, port, tls, conf).map(|c| {
+    pub fn new_plain(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
+        ::grpc::Client::new_plain(host, port, conf).map(|c| {
+            HealthDiscoveryServiceClient::with_client(c)
+        })
+    }
+    pub fn new_tls<C : ::tls_api::TlsConnector>(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
+        ::grpc::Client::new_tls::<C>(host, port, conf).map(|c| {
             HealthDiscoveryServiceClient::with_client(c)
         })
     }
@@ -73,59 +78,36 @@ impl HealthDiscoveryService for HealthDiscoveryServiceClient {
 
 // server
 
-pub struct HealthDiscoveryServiceServer {
-    pub grpc_server: ::grpc::Server,
-}
+pub struct HealthDiscoveryServiceServer;
 
-impl ::std::ops::Deref for HealthDiscoveryServiceServer {
-    type Target = ::grpc::Server;
-
-    fn deref(&self) -> &Self::Target {
-        &self.grpc_server
-    }
-}
 
 impl HealthDiscoveryServiceServer {
-    pub fn new<A : ::std::net::ToSocketAddrs, H : HealthDiscoveryService + 'static + Sync + Send + 'static>(addr: A, conf: ::grpc::ServerConf, h: H) -> Self {
-        let service_definition = HealthDiscoveryServiceServer::new_service_def(h);
-        HealthDiscoveryServiceServer {
-            grpc_server: ::grpc::Server::new_plain(addr, conf, service_definition),
-        }
-    }
-
-    pub fn new_pool<A : ::std::net::ToSocketAddrs, H : HealthDiscoveryService + 'static + Sync + Send + 'static>(addr: A, conf: ::grpc::ServerConf, h: H, cpu_pool: ::futures_cpupool::CpuPool) -> Self {
-        let service_definition = HealthDiscoveryServiceServer::new_service_def(h);
-        HealthDiscoveryServiceServer {
-            grpc_server: ::grpc::Server::new_plain_pool(addr, conf, service_definition, cpu_pool),
-        }
-    }
-
-    pub fn new_service_def<H : HealthDiscoveryService + 'static + Sync + Send + 'static>(handler: H) -> ::grpc::server::ServerServiceDefinition {
+    pub fn new_service_def<H : HealthDiscoveryService + 'static + Sync + Send + 'static>(handler: H) -> ::grpc::rt::ServerServiceDefinition {
         let handler_arc = ::std::sync::Arc::new(handler);
-        ::grpc::server::ServerServiceDefinition::new(
+        ::grpc::rt::ServerServiceDefinition::new("/envoy.api.v2.HealthDiscoveryService",
             vec![
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+                ::grpc::rt::ServerMethod::new(
+                    ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                         name: "/envoy.api.v2.HealthDiscoveryService/StreamHealthCheck".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::Bidi,
+                        streaming: ::grpc::rt::GrpcStreaming::Bidi,
                         req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                         resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                     }),
                     {
                         let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerBidi::new(move |o, p| handler_copy.stream_health_check(o, p))
+                        ::grpc::rt::MethodHandlerBidi::new(move |o, p| handler_copy.stream_health_check(o, p))
                     },
                 ),
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+                ::grpc::rt::ServerMethod::new(
+                    ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                         name: "/envoy.api.v2.HealthDiscoveryService/FetchHealthCheck".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::Unary,
+                        streaming: ::grpc::rt::GrpcStreaming::Unary,
                         req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                         resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                     }),
                     {
                         let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerUnary::new(move |o, p| handler_copy.fetch_health_check(o, p))
+                        ::grpc::rt::MethodHandlerUnary::new(move |o, p| handler_copy.fetch_health_check(o, p))
                     },
                 ),
             ],

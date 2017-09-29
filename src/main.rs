@@ -14,6 +14,8 @@ fn main() {
 
     let matches = app.get_matches();
 
+    // let xx = LbEndpoint::new();
+
     match matches.subcommand() {
         ("sds", Some(_)) => {
 

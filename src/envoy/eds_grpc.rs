@@ -22,160 +22,117 @@
 // interface
 
 pub trait EndpointDiscoveryService {
-    fn stream_endpoints(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::eds::EndpointDiscoveryRequest>) -> ::grpc::StreamingResponse<super::eds::EndpointDiscoveryResponse>;
+    fn stream_endpoints(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::discovery::DiscoveryRequest>) -> ::grpc::StreamingResponse<super::discovery::DiscoveryResponse>;
 
-    fn fetch_endpoints(&self, o: ::grpc::RequestOptions, p: super::eds::EndpointDiscoveryRequest) -> ::grpc::SingleResponse<super::eds::EndpointDiscoveryResponse>;
+    fn fetch_endpoints(&self, o: ::grpc::RequestOptions, p: super::discovery::DiscoveryRequest) -> ::grpc::SingleResponse<super::discovery::DiscoveryResponse>;
 
-    fn stream_load_balance(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::eds::LoadBalanceRequest>) -> ::grpc::StreamingResponse<super::eds::LoadBalanceResponse>;
-
-    fn fetch_load_balance(&self, o: ::grpc::RequestOptions, p: super::eds::LoadBalanceRequest) -> ::grpc::SingleResponse<super::eds::LoadBalanceResponse>;
+    fn stream_load_stats(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::eds::LoadStatsRequest>) -> ::grpc::StreamingResponse<super::eds::LoadStatsResponse>;
 }
 
 // client
 
 pub struct EndpointDiscoveryServiceClient {
     grpc_client: ::grpc::Client,
-    method_StreamEndpoints: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::eds::EndpointDiscoveryRequest, super::eds::EndpointDiscoveryResponse>>,
-    method_FetchEndpoints: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::eds::EndpointDiscoveryRequest, super::eds::EndpointDiscoveryResponse>>,
-    method_StreamLoadBalance: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::eds::LoadBalanceRequest, super::eds::LoadBalanceResponse>>,
-    method_FetchLoadBalance: ::std::sync::Arc<::grpc::method::MethodDescriptor<super::eds::LoadBalanceRequest, super::eds::LoadBalanceResponse>>,
+    method_StreamEndpoints: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::discovery::DiscoveryRequest, super::discovery::DiscoveryResponse>>,
+    method_FetchEndpoints: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::discovery::DiscoveryRequest, super::discovery::DiscoveryResponse>>,
+    method_StreamLoadStats: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::eds::LoadStatsRequest, super::eds::LoadStatsResponse>>,
 }
 
 impl EndpointDiscoveryServiceClient {
     pub fn with_client(grpc_client: ::grpc::Client) -> Self {
         EndpointDiscoveryServiceClient {
             grpc_client: grpc_client,
-            method_StreamEndpoints: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+            method_StreamEndpoints: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                 name: "/envoy.api.v2.EndpointDiscoveryService/StreamEndpoints".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::Bidi,
+                streaming: ::grpc::rt::GrpcStreaming::Bidi,
                 req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
-            method_FetchEndpoints: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+            method_FetchEndpoints: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                 name: "/envoy.api.v2.EndpointDiscoveryService/FetchEndpoints".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::Unary,
+                streaming: ::grpc::rt::GrpcStreaming::Unary,
                 req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
-            method_StreamLoadBalance: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
-                name: "/envoy.api.v2.EndpointDiscoveryService/StreamLoadBalance".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::Bidi,
-                req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
-                resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
-            }),
-            method_FetchLoadBalance: ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
-                name: "/envoy.api.v2.EndpointDiscoveryService/FetchLoadBalance".to_string(),
-                streaming: ::grpc::method::GrpcStreaming::Unary,
+            method_StreamLoadStats: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
+                name: "/envoy.api.v2.EndpointDiscoveryService/StreamLoadStats".to_string(),
+                streaming: ::grpc::rt::GrpcStreaming::Bidi,
                 req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
         }
     }
 
-    pub fn new(host: &str, port: u16, tls: bool, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
-        ::grpc::Client::new(host, port, tls, conf).map(|c| {
+    pub fn new_plain(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
+        ::grpc::Client::new_plain(host, port, conf).map(|c| {
+            EndpointDiscoveryServiceClient::with_client(c)
+        })
+    }
+    pub fn new_tls<C : ::tls_api::TlsConnector>(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
+        ::grpc::Client::new_tls::<C>(host, port, conf).map(|c| {
             EndpointDiscoveryServiceClient::with_client(c)
         })
     }
 }
 
 impl EndpointDiscoveryService for EndpointDiscoveryServiceClient {
-    fn stream_endpoints(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::eds::EndpointDiscoveryRequest>) -> ::grpc::StreamingResponse<super::eds::EndpointDiscoveryResponse> {
+    fn stream_endpoints(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::discovery::DiscoveryRequest>) -> ::grpc::StreamingResponse<super::discovery::DiscoveryResponse> {
         self.grpc_client.call_bidi(o, p, self.method_StreamEndpoints.clone())
     }
 
-    fn fetch_endpoints(&self, o: ::grpc::RequestOptions, p: super::eds::EndpointDiscoveryRequest) -> ::grpc::SingleResponse<super::eds::EndpointDiscoveryResponse> {
+    fn fetch_endpoints(&self, o: ::grpc::RequestOptions, p: super::discovery::DiscoveryRequest) -> ::grpc::SingleResponse<super::discovery::DiscoveryResponse> {
         self.grpc_client.call_unary(o, p, self.method_FetchEndpoints.clone())
     }
 
-    fn stream_load_balance(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::eds::LoadBalanceRequest>) -> ::grpc::StreamingResponse<super::eds::LoadBalanceResponse> {
-        self.grpc_client.call_bidi(o, p, self.method_StreamLoadBalance.clone())
-    }
-
-    fn fetch_load_balance(&self, o: ::grpc::RequestOptions, p: super::eds::LoadBalanceRequest) -> ::grpc::SingleResponse<super::eds::LoadBalanceResponse> {
-        self.grpc_client.call_unary(o, p, self.method_FetchLoadBalance.clone())
+    fn stream_load_stats(&self, o: ::grpc::RequestOptions, p: ::grpc::StreamingRequest<super::eds::LoadStatsRequest>) -> ::grpc::StreamingResponse<super::eds::LoadStatsResponse> {
+        self.grpc_client.call_bidi(o, p, self.method_StreamLoadStats.clone())
     }
 }
 
 // server
 
-pub struct EndpointDiscoveryServiceServer {
-    pub grpc_server: ::grpc::Server,
-}
+pub struct EndpointDiscoveryServiceServer;
 
-impl ::std::ops::Deref for EndpointDiscoveryServiceServer {
-    type Target = ::grpc::Server;
-
-    fn deref(&self) -> &Self::Target {
-        &self.grpc_server
-    }
-}
 
 impl EndpointDiscoveryServiceServer {
-    pub fn new<A : ::std::net::ToSocketAddrs, H : EndpointDiscoveryService + 'static + Sync + Send + 'static>(addr: A, conf: ::grpc::ServerConf, h: H) -> Self {
-        let service_definition = EndpointDiscoveryServiceServer::new_service_def(h);
-        EndpointDiscoveryServiceServer {
-            grpc_server: ::grpc::Server::new_plain(addr, conf, service_definition),
-        }
-    }
-
-    pub fn new_pool<A : ::std::net::ToSocketAddrs, H : EndpointDiscoveryService + 'static + Sync + Send + 'static>(addr: A, conf: ::grpc::ServerConf, h: H, cpu_pool: ::futures_cpupool::CpuPool) -> Self {
-        let service_definition = EndpointDiscoveryServiceServer::new_service_def(h);
-        EndpointDiscoveryServiceServer {
-            grpc_server: ::grpc::Server::new_plain_pool(addr, conf, service_definition, cpu_pool),
-        }
-    }
-
-    pub fn new_service_def<H : EndpointDiscoveryService + 'static + Sync + Send + 'static>(handler: H) -> ::grpc::server::ServerServiceDefinition {
+    pub fn new_service_def<H : EndpointDiscoveryService + 'static + Sync + Send + 'static>(handler: H) -> ::grpc::rt::ServerServiceDefinition {
         let handler_arc = ::std::sync::Arc::new(handler);
-        ::grpc::server::ServerServiceDefinition::new(
+        ::grpc::rt::ServerServiceDefinition::new("/envoy.api.v2.EndpointDiscoveryService",
             vec![
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+                ::grpc::rt::ServerMethod::new(
+                    ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                         name: "/envoy.api.v2.EndpointDiscoveryService/StreamEndpoints".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::Bidi,
+                        streaming: ::grpc::rt::GrpcStreaming::Bidi,
                         req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                         resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                     }),
                     {
                         let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerBidi::new(move |o, p| handler_copy.stream_endpoints(o, p))
+                        ::grpc::rt::MethodHandlerBidi::new(move |o, p| handler_copy.stream_endpoints(o, p))
                     },
                 ),
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
+                ::grpc::rt::ServerMethod::new(
+                    ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
                         name: "/envoy.api.v2.EndpointDiscoveryService/FetchEndpoints".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::Unary,
+                        streaming: ::grpc::rt::GrpcStreaming::Unary,
                         req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                         resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                     }),
                     {
                         let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerUnary::new(move |o, p| handler_copy.fetch_endpoints(o, p))
+                        ::grpc::rt::MethodHandlerUnary::new(move |o, p| handler_copy.fetch_endpoints(o, p))
                     },
                 ),
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
-                        name: "/envoy.api.v2.EndpointDiscoveryService/StreamLoadBalance".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::Bidi,
+                ::grpc::rt::ServerMethod::new(
+                    ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
+                        name: "/envoy.api.v2.EndpointDiscoveryService/StreamLoadStats".to_string(),
+                        streaming: ::grpc::rt::GrpcStreaming::Bidi,
                         req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                         resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
                     }),
                     {
                         let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerBidi::new(move |o, p| handler_copy.stream_load_balance(o, p))
-                    },
-                ),
-                ::grpc::server::ServerMethod::new(
-                    ::std::sync::Arc::new(::grpc::method::MethodDescriptor {
-                        name: "/envoy.api.v2.EndpointDiscoveryService/FetchLoadBalance".to_string(),
-                        streaming: ::grpc::method::GrpcStreaming::Unary,
-                        req_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
-                        resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
-                    }),
-                    {
-                        let handler_copy = handler_arc.clone();
-                        ::grpc::server::MethodHandlerUnary::new(move |o, p| handler_copy.fetch_load_balance(o, p))
+                        ::grpc::rt::MethodHandlerBidi::new(move |o, p| handler_copy.stream_load_stats(o, p))
                     },
                 ),
             ],

@@ -34,7 +34,7 @@ proto: vendor
 		--grpc_out=../../src/api \
 		--plugin=protoc-gen-grpc=`which grpc_rust_plugin` api/*.proto && \
 	cd ../../ && \
-	scripts/proto-fixup
+	scripts/generate-api-mod
 
 vendor:
 	mkdir -p vendor && \

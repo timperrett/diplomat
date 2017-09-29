@@ -1,10 +1,15 @@
 
 language: rust
 rust:
-  - 1.17.0
+  - 1.20.0
 
 install:
-- sudo apt-get update && sudo apt-get install -y protobuf-compiler
+- curl -OL https://github.com/google/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip
+- unzip protoc-3.2.0-linux-x86_64.zip -d protoc3
+- sudo mv protoc3/bin/* /usr/local/bin/
+- sudo mv protoc3/include/* /usr/local/include/
+- sudo chmod 775 /usr/local/bin/protoc
+# - sudo apt-get update && sudo apt-get install -y protobuf-compiler
 
 sudo: required
 

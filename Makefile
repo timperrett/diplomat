@@ -27,10 +27,14 @@ clean-full:
 proto: vendor
 	mkdir -p src/envoy && \
 	cd vendor/envoy-api && \
-	protoc --rust_out ../../src/envoy api/*.proto && \
-	protoc --rust-grpc_out ../../src/envoy api/*.proto
+	protoc \
+		--rust_out=../../src/envoy \
+		--grpc_out=../../src/envoy \
+		--plugin=protoc-gen-grpc=`which grpc_rust_plugin` api/*.proto && \
+	cd ../../ && \
+	scripts/proto-fixup
 
-vendor: clean
+vendor:
 	mkdir -p vendor && \
 	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api || echo "" > /dev/null  && \
 	git clone https://github.com/googleapis/googleapis.git vendor/googleapis || echo "" > /dev/null && \
@@ -38,6 +42,3 @@ vendor: clean
 
 consul:
 	consul agent -ui -server -advertise 127.0.0.1 -dev -data-dir target
-
-generate-api-mod:
-	scripts/proto-fixup

@@ -1,8 +1,8 @@
 # Diplomat
 
-[![Build Status](https://travis-ci.org/timperrett/consort.svg?branch=master)](https://travis-ci.org/timperrett/consort)
+[![Build Status](https://travis-ci.org/timperrett/diplomat.svg?branch=master)](https://travis-ci.org/timperrett/diplomat)
 
-Highly experimental gRPC server providing the also experimental [v2 envoy-api](https://github.com/lyft/envoy-api), with information backed by [Consul](https://github.com/hashicorp/consul)
+Highly experimental gRPC server providing the also experimental [v2 envoy-api](https://github.com/envoyproxy/data-plane-api), with information backed by [Consul](https://github.com/hashicorp/consul)
 
 This project is implemented wth [Rust](https://www.rust-lang.org/)
 
@@ -25,3 +25,11 @@ Once you have that installed, you can run:
 ```
 make setup
 ```
+
+If you would like to make a release build, use:
+
+```
+make release
+```
+
+By default all builds are devel builds and contains symbols

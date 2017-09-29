@@ -1,0 +1,7 @@
+[consul]
+scheme = "http"
+address = "b"
+datacenter = "c"
+username = "d"
+password = "e"
+token = "f"

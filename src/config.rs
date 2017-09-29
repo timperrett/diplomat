@@ -1,23 +1,24 @@
 
 #[derive(Deserialize)]
 pub struct Config {
-  consul: Consul
+  pub consul: Consul
 }
 
 #[derive(Deserialize)]
 pub struct Consul {
-    scheme: String,
-    address: String,
-    datacenter: String,
-    username: String,
-    password: String,
-    token: String,
+    pub scheme: String,
+    pub address: String,
+    pub datacenter: String,
+    pub username: String,
+    pub password: String,
+    pub token: String,
 }
 
 use toml;
 use std::fs::File;
 use std::io;
 
+#[derive(Debug)]
 pub enum ConfigError {
   IoError(io::Error),
   TomlError(toml::de::Error),

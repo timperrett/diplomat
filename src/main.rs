@@ -5,6 +5,9 @@ mod api;
 mod server;
 mod config;
 
+#[cfg(test)]
+mod config_test;
+
 #[macro_use]
 extern crate log;
 extern crate clap;

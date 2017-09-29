@@ -12,7 +12,9 @@ compile: proto
 	cargo build -v
 
 release: proto
-	cargo build -v --release
+	cargo build -v --release && \
+	mv target/release/diplomat diplomat && \
+	tar cvzf diplomat.tar.gz diplomat
 
 run: compile
 	./target/debug/diplomat --help

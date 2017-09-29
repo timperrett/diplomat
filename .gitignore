@@ -4,3 +4,6 @@ target/
 vendor
 Cargo.lock
 src/api/*.rs
+diplomat
+*.tar.gz
+*.zip

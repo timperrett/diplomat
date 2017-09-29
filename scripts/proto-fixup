@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+# generate the mod.rs definition
+ls src/envoy/*.rs | grep -v mod.rs | sed s/\.rs//g | sed s/src\\/envoy\\///g | awk '{print "mod " $1 ";"}' > src/envoy/mod.rs
+
+for f in $(ls src/envoy/*.rs); do
+  echo "==>> patching $f"
+  mv "$f" "${f}.bak"
+  # add the protobuf crate import
+  cat "${f}.bak" | awk '1;/#!\[allow\(unused_results\)\]/{ print ""; print "extern crate protobuf;"; print "extern crate grpc;"}' > "${f}" && \
+  sed -i '.bak' 's/use protobuf\:\:/use self::protobuf::/g' "$f" && \
+  sed -i '.bak' 's/ \:\:protobuf\:\:/ self::protobuf::/g' "$f" && \
+  sed -i '.bak' 's/<\:\:protobuf\:\:/<self::protobuf::/g' "$f" && \
+  sed -i '.bak' 's/-\> \&\:\:protobuf\:\:/ -> \&self::protobuf::/g' "$f" && \
+  sed -i '.bak' 's/(::protobuf::/(self::protobuf::/g' "$f"
+
+  rm "${f}.bak"
+done

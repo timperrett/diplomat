@@ -1,8 +1,13 @@
+#![allow(unused_imports)]
+
+mod envoy;
+
 extern crate clap;
 extern crate consul;
 
 use clap::{Arg, App, SubCommand};
 use consul::{Client};
+// use envoy::{LbEndpoint};
 
 fn main() {
     let app = App::new("diplomat")
@@ -14,6 +19,7 @@ fn main() {
 
     let matches = app.get_matches();
 
+    // let xx = LbEndpoint::endpoint();
     // let xx = LbEndpoint::new();
 
     match matches.subcommand() {

@@ -5,7 +5,7 @@ all: setup compile
 
 setup:
 	cargo install --force protobuf && \
-	cargo install --force grpc-compiler && \
+	cargo install --force grpcio-compiler && \
 	cargo install --force cargo-watch
 
 compile: proto
@@ -18,6 +18,9 @@ run: compile
 	./target/debug/diplomat --help
 
 clean:
+	rm -rf target
+
+clean-full:
 	rm -rf vendor && \
 	rm -rf target
 
@@ -29,9 +32,12 @@ proto: vendor
 
 vendor: clean
 	mkdir -p vendor && \
-	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api && \
-	git clone https://github.com/googleapis/googleapis.git vendor/googleapis && \
-	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api
+	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api || echo "" > /dev/null  && \
+	git clone https://github.com/googleapis/googleapis.git vendor/googleapis || echo "" > /dev/null && \
+	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api || echo "" > /dev/null
 
 consul:
 	consul agent -ui -server -advertise 127.0.0.1 -dev -data-dir target
+
+generate-api-mod:
+	scripts/proto-fixup

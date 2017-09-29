@@ -3,7 +3,7 @@
 set -e
 
 # generate the mod.rs definition
-ls src/api/*.rs | grep -v mod.rs | sed s/\.rs//g | sed s/src\\/api\\///g | awk '{print "mod " $1 ";"}' > src/api/mod.rs
+ls src/api/*.rs | grep -v mod.rs | sed s/\.rs//g | sed s/src\\/api\\///g | awk '{print "pub mod " $1 ";"}' > src/api/mod.rs
 
 for f in $(ls src/api/*.rs); do
   echo "==>> patching $f"

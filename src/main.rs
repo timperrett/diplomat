@@ -7,7 +7,7 @@ extern crate consul;
 
 use clap::{Arg, App, SubCommand};
 use consul::{Client};
-// use envoy::{LbEndpoint};
+use api::eds_grpc::EndpointDiscoveryService;
 
 fn main() {
     let app = App::new("diplomat")
@@ -19,8 +19,11 @@ fn main() {
 
     let matches = app.get_matches();
 
-    // let xx = LbEndpoint::endpoint();
-    // let xx = LbEndpoint::new();
+    // impl EDS for EndpointDiscoveryService {
+
+    // }
+
+    // let eds = api::eds::LbEndpoint::new();
 
     match matches.subcommand() {
         ("sds", Some(_)) => {

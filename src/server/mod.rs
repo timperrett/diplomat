@@ -8,12 +8,23 @@ use futures::Future;
 use futures::sync::oneshot;
 
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
+use api::eds_grpc;
 
 pub fn start() {
     let env = Arc::new(Environment::new(1));
-    // let service = helloworld_grpc::create_greeter(GreeterService);
+
+    // EDS
+    let eds_instance = eds::Service { };
+    let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
+
+    // CDS
+
+    // LDS
+
+    // RDS
+
     let mut server = ServerBuilder::new(env)
-        // .register_service(service)
+        .register_service(eds_service)
         .bind("127.0.0.1", 3000)
         .build()
         .unwrap();

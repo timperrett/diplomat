@@ -17,6 +17,7 @@ pub struct Consul {
 use toml;
 use std::fs::File;
 use std::io;
+use std::path::Path;
 
 #[derive(Debug)]
 pub enum ConfigError {
@@ -34,6 +35,7 @@ impl From<toml::de::Error> for ConfigError {
   }
 }
 
+
 /**
  * Given a string path, attempt to load the file.
  *
@@ -42,10 +44,14 @@ impl From<toml::de::Error> for ConfigError {
  * validation is needed here such that things dont get too crazy or unsafe.
  */
 pub fn load(path: String) -> Result<Config, ConfigError> {
-  let a = read_file(path);
-  let b: Result<Config,ConfigError> = a.and_then(|c| toml::from_str(&c)
-    .map_err(|e| ConfigError::from(e)) );
-  b
+  if Path::new(&path).exists() {
+    let a = read_file(path);
+    let b: Result<Config,ConfigError> = a.and_then(|c| toml::from_str(&c)
+      .map_err(|e| ConfigError::from(e)) );
+    b
+  } else {
+    Err(ConfigError::from(io::Error::new(io::ErrorKind::NotFound, "specified configuraiton file does not exist.")))
+  }
 }
 
 use std::io::prelude::*;

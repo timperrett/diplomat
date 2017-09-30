@@ -9,11 +9,11 @@ use consul::Client as ConsulClient;
 use futures::Future;
 
 #[derive(Clone)]
-struct EDS {
+pub struct Service {
     // consul: ConsulClient,
 }
 
-impl EndpointDiscoveryService for EDS {
+impl EndpointDiscoveryService for Service {
     fn stream_endpoints(&self,
         ctx: ::grpcio::RpcContext,
         stream: ::grpcio::RequestStream<::api::discovery::DiscoveryRequest>,

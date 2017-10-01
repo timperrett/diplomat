@@ -10,14 +10,23 @@ use futures::sync::oneshot;
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 use api::eds_grpc;
 use config::Config;
+use consul::Client as ConsulClient;
+// use std::borrow::Borrow;
 
-pub fn start(cfg: Config) {
+pub fn start<'a>(cfg: &'a Config, consul: &'a ConsulClient) {
     let env = Arc::new(Environment::new(1));
+    // let consul = ConsulClient::new("http://127.0.0.1:8500");
+
     // EDS
     let eds_instance = eds::Service {
       config: cfg,
+      client: consul,
     };
-    let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
+
+    // Unable to pass `eds_instance` here because the signiture of the generate proto code is:
+    // pub fn create_endpoint_discovery_service<S: EndpointDiscoveryService + Send + Clone + 'static>(s: S) -> ::grpcio::Service
+    // which means the compiller cannot track the lifetime here:
+    // let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
 
     // CDS
 
@@ -26,7 +35,7 @@ pub fn start(cfg: Config) {
     // RDS
 
     let mut server = ServerBuilder::new(env)
-        .register_service(eds_service)
+        // .register_service(eds_service)
         .bind("127.0.0.1", 3000)
         .build()
         .unwrap();

@@ -9,11 +9,12 @@ use consul::Client as ConsulClient;
 use futures::Future;
 
 #[derive(Clone)]
-pub struct Service {
-    pub config: ::config::Config,
+pub struct Service<'a> {
+    pub config: &'a ::config::Config,
+    pub client: &'a ::consul::Client,
 }
 
-impl EndpointDiscoveryService for Service {
+impl<'b> EndpointDiscoveryService for Service<'b> {
     fn stream_endpoints(&self,
         ctx: ::grpcio::RpcContext,
         stream: ::grpcio::RequestStream<::api::discovery::DiscoveryRequest>,
@@ -25,6 +26,8 @@ impl EndpointDiscoveryService for Service {
         req: ::api::discovery::DiscoveryRequest,
         sink: ::grpcio::UnarySink<::api::discovery::DiscoveryResponse>)
     {
+        let foo: &'b ::consul::Client = &self.client;
+
         let mut resp = ::api::discovery::DiscoveryResponse::new();
         let f = sink.success(resp)
             .map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));

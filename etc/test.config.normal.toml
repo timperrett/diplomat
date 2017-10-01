@@ -1,5 +1,5 @@
 [consul]
-scheme = "http"
+ssl = true
 address = "b"
 datacenter = "c"
 username = "d"

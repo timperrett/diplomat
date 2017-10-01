@@ -2,6 +2,12 @@
 name = "diplomat"
 version = "0.1.0"
 authors = [ "Timothy Perrett" ]
+exclude = [ "etc/*" ]
+keywords = [ "envoy", "xds", "data-plane", "consul" ]
+readme = "README.markdown"
+description = "Envoy v2 gRPC provider, backed by Consul"
+license = "Apache 2.0"
+repository = "https://github.com/timperrett/diplomat"
 
 [dependencies]
 grpcio          = "0.1"

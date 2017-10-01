@@ -10,7 +10,7 @@ use futures::Future;
 
 #[derive(Clone)]
 pub struct Service {
-    // consul: ConsulClient,
+    pub config: ::config::Config,
 }
 
 impl EndpointDiscoveryService for Service {

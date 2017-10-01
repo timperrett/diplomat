@@ -10,6 +10,7 @@ mod config_test;
 
 #[macro_use]
 extern crate log;
+#[macro_use]
 extern crate clap;
 extern crate consul;
 extern crate grpcio;
@@ -21,12 +22,15 @@ extern crate toml;
 
 use clap::{Arg, App, SubCommand};
 use consul::Client as ConsulClient;
+use std::process::exit;
+
+const BAR: &'static str = env!("CARGO_PKG_VERSION");
 
 fn main() {
-  const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+  // const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
   let app = App::new("diplomat")
-    .version(VERSION)
+    .version(crate_version!())
     .about("Provides the Envoy v2 API as a gRPC service and CLI application.")
     .author("Timothy Perrett")
     .arg(Arg::with_name("c")
@@ -35,13 +39,13 @@ fn main() {
       .help("Path to the configuration for diplomat")
       .required(false)
       .takes_value(true))
-    .subcommand(SubCommand::with_name("sds")
-      .about("given a service name, resolve the IPs providing that service"))
+    .subcommand(SubCommand::with_name("eds")
+      .about("given a service name, resolve the IPs providing that service")
       .arg(Arg::with_name("service-name")
         .long("service-name")
         .value_name("service-name")
         .required(true)
-        .takes_value(true));
+        .takes_value(true)));
 
   // TIM: Not sure if cloning here is going to cause problems,
   // but given this is once at the edge of the world it probally isn't
@@ -49,7 +53,13 @@ fn main() {
   let matches = app.clone().get_matches();
 
   let config_path: &str = matches.value_of("consul-addr").unwrap_or("diplomat.toml");
+  info!("==>> attempting to load configuration from '{}'", config_path);
+
   let config = config::load(config_path.to_string());
+  if config.is_err() {
+    error!("==>> failed loading the specified configuration file... exiting.")
+  }
+
   let consul = ConsulClient::new("http://127.0.0.1:8500");
 
   match matches.subcommand() {
@@ -58,7 +68,7 @@ fn main() {
         println!("{:?}", ips);
     },
     ("serve", Some(_)) => {
-        ::server::start();
+        ::server::start(config.unwrap());
     },
     _ => {
       let _ = app.clone().print_help();

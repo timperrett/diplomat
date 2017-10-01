@@ -1,12 +1,12 @@
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Config {
   pub consul: Consul
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Consul {
-    pub scheme: String,
+    pub ssl: bool,
     pub address: String,
     pub datacenter: String,
     pub username: String,
@@ -34,7 +34,6 @@ impl From<toml::de::Error> for ConfigError {
     ConfigError::TomlError(error)
   }
 }
-
 
 /**
  * Given a string path, attempt to load the file.

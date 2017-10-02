@@ -70,10 +70,10 @@ $ cargo watch
 
 #### Release Builds
 
-If you would like to make a release build, use:
+Release builds are automatically built for this project and posted [on Github Releases](https://github.com/timperrett/diplomat/releases) for Linux amd64 machines. If you need to build your own release-class binaray for another platform, simply use:
 
 ```
 $ make release
 ```
 
-**By default all builds are devel builds and contains symbols**
+By default all builds are devel builds and contains symbols, so making a dedicated release is important.

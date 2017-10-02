@@ -12,10 +12,10 @@ install:
 
 before_script:
 - make setup
+- tree -N `pwd`
 
 script:
 - make release
-- tree -N 4
 
 dist: trusty
 

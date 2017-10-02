@@ -13,9 +13,8 @@ use config::Config;
 use consul::Client as ConsulClient;
 // use std::borrow::Borrow;
 
-pub fn start<'a>(cfg: &'a Config, consul: &'a ConsulClient) {
+pub fn start(cfg: Config, consul: Arc<ConsulClient>) {
     let env = Arc::new(Environment::new(1));
-    // let consul = ConsulClient::new("http://127.0.0.1:8500");
 
     // EDS
     let eds_instance = eds::Service {

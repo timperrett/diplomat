@@ -23,12 +23,9 @@ extern crate toml;
 use clap::{Arg, App, SubCommand};
 use consul::Client as ConsulClient;
 use std::process::exit;
-
-const BAR: &'static str = env!("CARGO_PKG_VERSION");
+use std::sync::Arc;
 
 fn main() {
-  // const VERSION: &'static str = env!("CARGO_PKG_VERSION");
-
   let app = App::new("diplomat")
     .version(crate_version!())
     .about("Provides the Envoy v2 API as a gRPC service and CLI application.")
@@ -60,7 +57,8 @@ fn main() {
     error!("==>> failed loading the specified configuration file... exiting.")
   }
 
-  let consul = ConsulClient::new("http://127.0.0.1:8500");
+  // TODO: Remove me.
+  let consul = Arc::new(ConsulClient::new("http://127.0.0.1:8500"));
 
   match matches.subcommand() {
     ("eds", Some(_)) => {
@@ -68,7 +66,7 @@ fn main() {
         println!("{:?}", ips);
     },
     ("serve", Some(_)) => {
-        ::server::start(config.unwrap());
+        ::server::start(config.unwrap(), consul);
     },
     _ => {
       let _ = app.clone().print_help();

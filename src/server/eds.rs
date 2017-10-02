@@ -1,36 +1,42 @@
 
-// use std::sync::Arc;
-// use std::io::Read;
-// use std::time::Instant;
-// use std::{io, thread};
-
 use api::eds_grpc::{EndpointDiscoveryService};
 use consul::Client as ConsulClient;
 use futures::Future;
+use config::Config;
+use std::sync::Arc;
 
 #[derive(Clone)]
-pub struct Service<'a> {
-    pub config: &'a ::config::Config,
-    pub client: &'a ::consul::Client,
+pub struct Service {
+    pub config: Config,
+    pub client: Arc<ConsulClient>,
 }
 
-impl<'b> EndpointDiscoveryService for Service<'b> {
+use ::api::discovery::{DiscoveryRequest,DiscoveryResponse};
+use grpcio::{RpcStatus,RpcStatusCode,UnarySinkResult};
+
+impl EndpointDiscoveryService for Service {
+    // let consul = client.
+
     fn stream_endpoints(&self,
         ctx: ::grpcio::RpcContext,
         stream: ::grpcio::RequestStream<::api::discovery::DiscoveryRequest>,
         sink: ::grpcio::DuplexSink<::api::discovery::DiscoveryResponse>){
 
     }
+
     fn fetch_endpoints(&self,
         ctx: ::grpcio::RpcContext,
-        req: ::api::discovery::DiscoveryRequest,
-        sink: ::grpcio::UnarySink<::api::discovery::DiscoveryResponse>)
+        req: DiscoveryRequest,
+        sink: ::grpcio::UnarySink<DiscoveryResponse>)
     {
-        let foo: &'b ::consul::Client = &self.client;
+        let resp = resolve_endpoints(&self.client, req.clone());
 
-        let mut resp = ::api::discovery::DiscoveryResponse::new();
-        let f = sink.success(resp)
-            .map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
+        let y = match resp {
+            Ok(x) => sink.success(x),
+            Err(_) => sink.fail(RpcStatus::new(RpcStatusCode::Internal, None)),
+        };
+
+        let f = y.map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
         ctx.spawn(f)
     }
 
@@ -40,4 +46,11 @@ impl<'b> EndpointDiscoveryService for Service<'b> {
         sink: ::grpcio::DuplexSink<::api::eds::LoadStatsResponse>){
 
     }
+}
+
+fn resolve_endpoints(c: &ConsulClient, req: DiscoveryRequest) -> Result<DiscoveryResponse, String> {
+    // let item = req.resource_names.pop()
+
+    let foo = c.catalog.get_nodes("consul".to_owned());
+    Ok(DiscoveryResponse::new())
 }

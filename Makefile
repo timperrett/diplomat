@@ -3,11 +3,6 @@ PROGRAM_NAME ?= diplomat
 
 all: setup compile
 
-setup:
-	cargo install --force protobuf && \
-	cargo install --force grpcio-compiler && \
-	cargo install --force cargo-watch
-
 compile: proto
 	cargo build -v
 

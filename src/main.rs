@@ -19,6 +19,7 @@ extern crate protobuf;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
+extern crate curl;
 
 use clap::{Arg, App, SubCommand};
 use std::process::exit;

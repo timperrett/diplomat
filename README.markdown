@@ -24,15 +24,30 @@ $ diplomat --config /path/to/config.toml eds --service-name foo
 
 As gRPC relies on [Protocol Buffers](https://developers.google.com/protocol-buffers/), you will need to ensure that you have the `protoc` tooling avaialble on your development machine.
 
+#### Install Rust
+
+Before you start with the rest of this guide, be sure to [Install Rust](https://www.rust-lang.org/en-US/install.html) for your appropriate platform.
+
 #### Installing Protobuf
 
 On OSX install protobuf with Homebrew:
 
 ```
 $ brew install protobuf
+$ brew install cmake
+$ brew install go
 ```
 
-On Ubuntu, a few additional steps are needed. Sadly, using `apt-get install protobuf-compiler` does not provide a recent enough version of the `protoc` compiller. The Envoy `.proto` files require at **least version 3** of the compiller.
+On Linux, a few additional steps are needed. Sadly, using `apt-get install protobuf-compiler` does not provide a recent enough version of the `protoc` compiller. The Envoy `.proto` files require at **least version 3** of the compiller.
+
+```
+$ sudo apt-get install build-essential cmake
+$ sudo add-apt-repository ppa:gophers/archive
+$ sudo apt update
+$ sudo apt-get install golang-1.8-go
+```
+
+Then the steps to insall `protoc`:
 
 ```
 # download and unzip the needed tools

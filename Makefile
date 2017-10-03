@@ -21,7 +21,12 @@ clean-full:
 	rm -rf vendor && \
 	rm -rf target
 
-proto: vendor
+setup:
+	cargo install --force protobuf && \
+	cargo install --force grpcio-compiler && \
+	cargo install --force cargo-watch
+
+proto: setup vendor
 	mkdir -p src/api && \
 	cd vendor/envoy-api && \
 	protoc \

@@ -4,6 +4,10 @@ set -e
 
 cd /tmp
 wget https://www.openssl.org/source/openssl-1.1.0.tar.gz -O openssl.tar.gz
+tar xzvf openssl.tar.gz
+rm openssl.tar.gz
+mv openssl-* openssl
+cd openssl
 ./config
 make
 sudo make install

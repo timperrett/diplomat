@@ -23,8 +23,9 @@ clean-full:
 	rm -rf target
 
 setup: vendor
-	cargo install protobuf || echo "[info] protobuf crate already installed..." && \
-	cargo install grpcio-compiler || echo "[info] grpcio-compiler crate already installed..."
+	cargo install protobuf || echo "[info] protobuf crate already installed, skipping..." && \
+	cargo install grpcio-compiler || echo "[info] grpcio-compiler crate already installed, skipping..."
+	cargo install rustfmt || echo "[info] rustfmt crate already installed, skipping..."
 
 proto: setup
 	mkdir -p `pwd`/src/api && \

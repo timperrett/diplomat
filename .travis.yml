@@ -4,15 +4,14 @@ rust:
   - 1.20.0
 
 install:
-- sudo apt-get install tree
 - curl -OL https://github.com/google/protobuf/releases/download/v3.4.0/protoc-3.4.0-linux-x86_64.zip
 - unzip protoc-3.4.0-linux-x86_64.zip -d protoc3
 - mv protoc3/bin/* $HOME/bin
 - chmod 775 $HOME/bin/*
 
 before_script:
-- make setup
-- tree -N `pwd`
+- make proto
+- ls -lah vendor
 
 script:
 - make release

@@ -10,16 +10,13 @@ use futures::sync::oneshot;
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 use api::eds_grpc;
 use config::Config;
-use consul::Client as ConsulClient;
-// use std::borrow::Borrow;
 
-pub fn start(cfg: Config, consul: Arc<ConsulClient>) {
+pub fn start(cfg: Config) {
     let env = Arc::new(Environment::new(1));
 
     // EDS
     let eds_instance = eds::Service {
       config: cfg,
-      client: consul,
     };
 
     // Unable to pass `eds_instance` here because the signiture of the generate proto code is:

@@ -4,6 +4,7 @@
 mod api;
 mod server;
 mod config;
+mod consul;
 
 #[cfg(test)]
 mod config_test;
@@ -12,7 +13,6 @@ mod config_test;
 extern crate log;
 #[macro_use]
 extern crate clap;
-extern crate consul;
 extern crate grpcio;
 extern crate futures;
 extern crate protobuf;
@@ -21,7 +21,6 @@ extern crate serde_derive;
 extern crate toml;
 
 use clap::{Arg, App, SubCommand};
-use consul::Client as ConsulClient;
 use std::process::exit;
 use std::sync::Arc;
 
@@ -58,15 +57,15 @@ fn main() {
   }
 
   // TODO: Remove me.
-  let consul = Arc::new(ConsulClient::new("http://127.0.0.1:8500"));
+  // let consul = Arc::new(ConsulClient::new("http://127.0.0.1:8500"));
 
   match matches.subcommand() {
     ("eds", Some(_)) => {
-        let ips = consul.catalog.get_nodes("consul".to_string()).unwrap();
-        println!("{:?}", ips);
+        // let ips = consul.catalog.get_nodes("consul".to_string()).unwrap();
+        println!("{:?}", "ips");
     },
     ("serve", Some(_)) => {
-        ::server::start(config.unwrap(), consul);
+        ::server::start(config.unwrap());
     },
     _ => {
       let _ = app.clone().print_help();

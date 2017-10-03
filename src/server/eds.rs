@@ -1,6 +1,6 @@
 
 use api::eds_grpc::{EndpointDiscoveryService};
-use consul::Client as ConsulClient;
+// use consul::Client as ConsulClient;
 use futures::Future;
 use config::Config;
 use std::sync::Arc;
@@ -8,7 +8,7 @@ use std::sync::Arc;
 #[derive(Clone)]
 pub struct Service {
     pub config: Config,
-    pub client: Arc<ConsulClient>,
+    // pub client: Arc<ConsulClient>,
 }
 
 use ::api::discovery::{DiscoveryRequest,DiscoveryResponse};
@@ -29,15 +29,15 @@ impl EndpointDiscoveryService for Service {
         req: DiscoveryRequest,
         sink: ::grpcio::UnarySink<DiscoveryResponse>)
     {
-        let resp = resolve_endpoints(&self.client, req.clone());
+        // let resp = resolve_endpoints(&self.client, req.clone());
 
-        let y = match resp {
-            Ok(x) => sink.success(x),
-            Err(_) => sink.fail(RpcStatus::new(RpcStatusCode::Internal, None)),
-        };
+        // let y = match resp {
+        //     Ok(x) => sink.success(x),
+        //     Err(_) => sink.fail(RpcStatus::new(RpcStatusCode::Internal, None)),
+        // };
 
-        let f = y.map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
-        ctx.spawn(f)
+        // let f = y.map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
+        // ctx.spawn(f)
     }
 
     fn stream_load_stats(&self,
@@ -48,9 +48,9 @@ impl EndpointDiscoveryService for Service {
     }
 }
 
-fn resolve_endpoints(c: &ConsulClient, req: DiscoveryRequest) -> Result<DiscoveryResponse, String> {
-    // let item = req.resource_names.pop()
+// fn resolve_endpoints(c: &ConsulClient, req: DiscoveryRequest) -> Result<DiscoveryResponse, String> {
+//     // let item = req.resource_names.pop()
 
-    let foo = c.catalog.get_nodes("consul".to_owned());
-    Ok(DiscoveryResponse::new())
-}
+//     let foo = c.catalog.get_nodes("consul".to_owned());
+//     Ok(DiscoveryResponse::new())
+// }

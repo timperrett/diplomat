@@ -4,15 +4,14 @@ rust:
   - 1.20.0
 
 install:
+- ./scripts/install-openssl-linux
 - ./scripts/install-protobuf-linux
-- sudo apt-get install libssl-dev
 
 before_script:
 - which protoc
 
 script:
 - make release
-
 
 # deploy:
 #   provider: releases

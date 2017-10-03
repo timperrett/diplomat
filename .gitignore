@@ -2,3 +2,8 @@ target/
 **/*.rs.bk
 .DS_Store
 vendor
+Cargo.lock
+src/api/*.rs
+diplomat
+*.tar.gz
+*.zip

@@ -1,20 +1,31 @@
 
 language: rust
 rust:
-  - 1.17.0
+  - 1.20.0
 
 install:
-- curl -OL https://github.com/google/protobuf/releases/download/v${PROTO_VERSION}/protoc-${PROTO_VERSION}-linux-x86_64.zip
-- unzip protoc-${PROTO_VERSION}-linux-x86_64.zip -d protoc3
-- mkdir -p $HOME/bin
-- mv protoc3/bin/protoc $HOME/bin/protoc
-- export PATH=$HOME/bin:$PATH
+- sudo apt-get install tree
+- curl -OL https://github.com/google/protobuf/releases/download/v3.4.0/protoc-3.4.0-linux-x86_64.zip
+- unzip protoc-3.4.0-linux-x86_64.zip -d protoc3
+- mv protoc3/bin/* $HOME/bin
+- chmod 775 $HOME/bin/*
 
-env:
-  global:
-  - PROTO_VERSION=3.3.0
+before_script:
+- make setup
+- tree -N `pwd`
 
 script:
-- make all
+- make release
 
 dist: trusty
+
+# deploy:
+#   provider: releases
+#   skip_cleanup: true
+#   file_glob: true
+#   file: diplomat.tar.gz
+#   api_key:
+#     secure: xxxxxxxxx
+#   on:
+#     tags: true
+#     repo: timperrett/diplomat

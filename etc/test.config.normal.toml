@@ -1,0 +1,7 @@
+[consul]
+ssl = true
+address = "b"
+datacenter = "c"
+username = "d"
+password = "e"
+token = "f"

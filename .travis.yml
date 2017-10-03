@@ -11,8 +11,7 @@ before_script:
 - which protoc
 
 script:
-- make proto
-# - make release
+- make release
 
 
 # deploy:

@@ -22,9 +22,8 @@ clean-full:
 	rm -rf target
 
 setup:
-	cargo install --force protobuf && \
-	cargo install --force grpcio-compiler && \
-	cargo install --force cargo-watch
+	cargo install protobuf && \
+	cargo install grpcio-compiler
 
 proto: setup vendor
 	mkdir -p `pwd`/src/api && \

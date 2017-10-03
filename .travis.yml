@@ -6,17 +6,14 @@ rust:
 install:
 - curl -OL https://github.com/google/protobuf/releases/download/v3.4.0/protoc-3.4.0-linux-x86_64.zip
 - unzip protoc-3.4.0-linux-x86_64.zip -d protoc3
-- mv protoc3/bin/* $HOME/bin
-- chmod 775 $HOME/bin/*
-
-before_script:
-- make proto
-- ls -lah vendor
+- sudo mv protoc3/bin/* /usr/local/bin && sudo chmod 775 /usr/local/bin/*
+- sudo mv protoc3/include/* /usr/local/include && sudo chmod -R 755 /usr/local/include
 
 script:
-- make release
+- make vendor
+- ls -lah vendor
+# - make release
 
-dist: trusty
 
 # deploy:
 #   provider: releases

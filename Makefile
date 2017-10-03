@@ -27,8 +27,8 @@ setup:
 	cargo install --force cargo-watch
 
 proto: setup vendor
-	mkdir -p src/api && \
-	cd vendor/envoy-api && \
+	mkdir -p `pwd`/src/api && \
+	cd `pwd`/vendor/envoy-api && \
 	protoc \
 		--rust_out=../../src/api \
 		--grpc_out=../../src/api \
@@ -38,9 +38,10 @@ proto: setup vendor
 
 vendor:
 	mkdir -p vendor && \
-	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api || echo "" > /dev/null  && \
-	git clone https://github.com/googleapis/googleapis.git vendor/googleapis || echo "" > /dev/null && \
-	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api || echo "" > /dev/null
+	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api || echo "[warn] unable to clone data-plane-api" > /dev/null  && \
+	git clone https://github.com/googleapis/googleapis.git vendor/googleapis || echo "[warn] unable to clone googleapis" > /dev/null && \
+	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api || echo "[warn] unable to link to vendor/envoy-api" > /dev/null && \
+	echo "[info] successfully updated the vendor dependencies..."
 
 consul:
 	consul agent -ui -server -advertise 127.0.0.1 -dev -data-dir target

@@ -41,10 +41,7 @@ $ brew install go
 On Linux, a few additional steps are needed. Sadly, using `apt-get install protobuf-compiler` does not provide a recent enough version of the `protoc` compiller. The Envoy `.proto` files require at **least version 3** of the compiller.
 
 ```
-$ sudo apt-get install build-essential cmake
-$ sudo add-apt-repository ppa:gophers/archive
-$ sudo apt update
-$ sudo apt-get install golang-1.8-go
+$ sudo apt-get install build-essential cmake git libssl-dev golang-go
 ```
 
 Then the steps to insall `protoc`:

@@ -4,10 +4,8 @@ rust:
   - 1.20.0
 
 install:
-- curl -OL https://github.com/google/protobuf/releases/download/v3.4.0/protoc-3.4.0-linux-x86_64.zip
-- unzip protoc-3.4.0-linux-x86_64.zip -d protoc3
-- sudo mv protoc3/bin/* /usr/local/bin && sudo chmod 775 /usr/local/bin/*
-- sudo mv protoc3/include/* /usr/local/include && sudo chmod -R 755 /usr/local/include
+- ./scripts/install-protobuf-linux
+- sudo apt-get install libssl-dev
 
 before_script:
 - which protoc

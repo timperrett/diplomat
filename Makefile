@@ -21,11 +21,11 @@ clean-full:
 	rm -rf vendor && \
 	rm -rf target
 
-setup:
-	cargo install protobuf && \
-	cargo install grpcio-compiler
+setup: vendor
+	cargo install protobuf || echo "[info] protobuf crate already installed..." && \
+	cargo install grpcio-compiler || echo "[info] grpcio-compiler crate already installed..."
 
-proto: setup vendor
+proto: setup
 	mkdir -p `pwd`/src/api && \
 	cd `pwd`/vendor/envoy-api && \
 	protoc \
@@ -37,9 +37,9 @@ proto: setup vendor
 
 vendor:
 	mkdir -p vendor && \
-	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api || echo "[warn] unable to clone data-plane-api" > /dev/null  && \
-	git clone https://github.com/googleapis/googleapis.git vendor/googleapis || echo "[warn] unable to clone googleapis" > /dev/null && \
-	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api || echo "[warn] unable to link to vendor/envoy-api" > /dev/null && \
+	git clone https://github.com/envoyproxy/data-plane-api.git vendor/envoy-api || echo "[warn] unable to clone data-plane-api" && \
+	git clone https://github.com/googleapis/googleapis.git vendor/googleapis || echo "[warn] unable to clone googleapis" && \
+	ln -s `pwd`/vendor/googleapis/google `pwd`/vendor/envoy-api || echo "[warn] unable to link to vendor/envoy-api" && \
 	echo "[info] successfully updated the vendor dependencies..."
 
 consul:

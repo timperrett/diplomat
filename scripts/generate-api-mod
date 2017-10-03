@@ -3,4 +3,4 @@
 set -e
 
 # generate the mod.rs definition
-ls src/api/*.rs | grep -v mod.rs | sed s/\.rs//g | sed s/src\\/api\\///g | awk '{print "pub mod " $1 ";"}' > src/api/mod.rs
+ls `pwd`/src/api/*.rs | grep -v mod.rs | sed s/\.rs//g | sed s/src\\/api\\///g | xargs basename -a | awk '{print "pub mod " $1 ";"}' > `pwd`/src/api/mod.rs

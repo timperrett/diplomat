@@ -15,13 +15,8 @@ pub fn start(cfg: Config) {
     let env = Arc::new(Environment::new(1));
 
     // EDS
-    let eds_instance = eds::Service {
-      config: cfg,
-    };
+    let eds_instance = eds::Service { config: cfg };
 
-    // Unable to pass `eds_instance` here because the signiture of the generate proto code is:
-    // pub fn create_endpoint_discovery_service<S: EndpointDiscoveryService + Send + Clone + 'static>(s: S) -> ::grpcio::Service
-    // which means the compiller cannot track the lifetime here:
     // let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
 
     // CDS

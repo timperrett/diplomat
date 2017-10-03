@@ -8,13 +8,14 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new<'a, S>(address: S) -> Client where S: Into<Cow<'a, str>> {
+    pub fn new<'a, S>(address: S) -> Client
+    where
+        S: Into<Cow<'a, str>>,
+    {
         let cow = address.into();
         // let addr = cow.borrow();
         // let catalog = Catalog::new(addr);
-        Client {
-
-        }
+        Client {}
     }
 }
 
@@ -36,4 +37,3 @@ impl Client {
 //     Ok(stdout().write(data).unwrap())
 // }).unwrap();
 // easy.perform().unwrap();
-

@@ -14,8 +14,7 @@ before_script:
 - openssl version
 
 script:
-- echo "hello"
-# - make release
+- make release
 
 # deploy:
 #   provider: releases

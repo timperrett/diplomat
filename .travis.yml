@@ -6,7 +6,7 @@ rust:
 sudo: required
 
 install:
-- ./scripts/install-openssl-linux
+- ./scripts/install-openssl-linux > /dev/null
 - ./scripts/install-protobuf-linux
 - export PATH="$HOME/bin:$PATH"
 

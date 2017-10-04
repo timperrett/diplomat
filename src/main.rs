@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
+#[allow(unused)]
 
 mod api;
 mod server;
@@ -18,12 +19,24 @@ extern crate futures;
 extern crate protobuf;
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
+extern crate serde_json;
 extern crate toml;
-extern crate curl;
+
+#[macro_use]
+extern crate error_chain;
+
+#[macro_use]
+extern crate reqwest;
+
+extern crate serde;
+extern crate url;
 
 use clap::{Arg, App, SubCommand};
 use std::process::exit;
 use std::sync::Arc;
+
+// use consul::client::Client as ConsulClient;
 
 fn main() {
     let app = App::new("diplomat")
@@ -76,6 +89,7 @@ fn main() {
     match matches.subcommand() {
         ("eds", Some(_)) => {
             // let ips = consul.catalog.get_nodes("consul".to_string()).unwrap();
+            // consul.catalog.service("consul");
             println!("{:?}", "ips");
         }
         ("serve", Some(_)) => {

@@ -1,0 +1,12 @@
+==============================================================
+ diplomat
+ Copyright (C) 2017 Timothy Perrett.
+==============================================================
+
+This product includes software developed by
+Timothy Perrett (timperrett.com; github.com/timperrett).
+
+diplomat includes derivative work consul-rust:
+https://crates.io/crates/consul
+https://github.com/stusmall/consul-rust
+Licensed under Apache 2.0

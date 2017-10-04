@@ -36,6 +36,8 @@ On OSX install protobuf with Homebrew:
 $ brew install protobuf
 $ brew install cmake
 $ brew install go
+# for local dev testing only, can be skipped just to build
+$ brew install consul
 ```
 
 On Linux, a few additional steps are needed. Sadly, using `apt-get install protobuf-compiler` does not provide a recent enough version of the `protoc` compiller. The Envoy `.proto` files require at **least version 3** of the compiller.

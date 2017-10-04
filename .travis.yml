@@ -6,6 +6,7 @@ rust:
 install:
 # - ./scripts/install-openssl-linux
 - ./scripts/install-protobuf-linux
+# - export PATH=":$PATH"
 
 script:
 - make release

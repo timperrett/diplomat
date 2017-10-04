@@ -6,7 +6,6 @@ rust:
 sudo: required
 
 install:
-- sudo mv /usr/bin/openssl /usr/bin/openssl-1.0
 - ./scripts/install-openssl-linux > /dev/null
 - ./scripts/install-protobuf-linux
 
@@ -15,6 +14,10 @@ before_script:
 
 script:
 - make release
+
+env:
+  global:
+  - OPENSSL_DIR=/opt/openssl
 
 # deploy:
 #   provider: releases

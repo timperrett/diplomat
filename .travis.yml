@@ -6,6 +6,9 @@ rust:
 sudo: required
 
 install:
+- sudo apt-get update
+- sudo apt-get remove libssl-dev
+- sudo apt-get autoremove
 - ./scripts/install-openssl-linux > /dev/null
 - ./scripts/install-protobuf-linux
 

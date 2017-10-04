@@ -6,7 +6,7 @@ rust:
 sudo: required
 
 install:
-- sudo apt-get install libssl-dev
+- sudo mv /usr/bin/openssl /usr/bin/openssl-1.0
 - ./scripts/install-openssl-linux > /dev/null
 - ./scripts/install-protobuf-linux
 
@@ -14,7 +14,8 @@ before_script:
 - openssl version
 
 script:
-- make release
+- echo "hello"
+# - make release
 
 # deploy:
 #   provider: releases

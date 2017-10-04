@@ -6,7 +6,10 @@ rust:
 install:
 # - ./scripts/install-openssl-linux
 - ./scripts/install-protobuf-linux
-# - export PATH=":$PATH"
+- export PATH="$HOME/bin:$PATH"
+
+before_script:
+- which protoc
 
 script:
 - make release

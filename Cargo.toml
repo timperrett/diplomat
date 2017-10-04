@@ -30,5 +30,5 @@ protobuf        = "1.4"
 grpcio-compiler = "0.1.0"
 cargo-watch     = "6.0"
 
-[profile.release]
-lto = true
+# [profile.release]
+# lto = true

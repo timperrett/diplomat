@@ -2,16 +2,12 @@
 
 set -e
 
-TARGET_DIR="$HOME/bin"
-if [ -z "$TRAVIS" ]; then
-  TARGET_DIR=/usr/local/bin
-fi
+TARGET_DIR=/usr/local
 
-mkdir -p $TARGET_DIR
 curl -OL https://github.com/google/protobuf/releases/download/v3.4.0/protoc-3.4.0-linux-x86_64.zip
 unzip protoc-3.4.0-linux-x86_64.zip -d protoc3
-mv protoc3/bin/* $TARGET_DIR && chmod -R 775 $TARGET_DIR
-# mv protoc3/include/* /usr/local/include && chmod -R 755 /usr/local/include
+sudo mv protoc3/bin/* ${TARGET_DIR}/bin && sudo chmod -R 775 ${TARGET_DIR}/bin
+sudo mv protoc3/include/* ${TARGET_DIR}/include && sudo chmod -R 755 ${TARGET_DIR}/include
 
 # remove the garbage
 rm protoc-3.4.0-linux-x86_64.zip && \

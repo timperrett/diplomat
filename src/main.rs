@@ -81,9 +81,6 @@ fn main() {
         error!("==>> failed loading the specified configuration file... exiting.")
     }
 
-    // TODO: Remove me.
-    // let consul = Arc::new(ConsulClient::new("http://127.0.0.1:8500"));
-
     match matches.subcommand() {
         ("eds", Some(_)) => {
             let ccc = consul::Config::new().unwrap();

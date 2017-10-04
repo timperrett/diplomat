@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use super::{Client, QueryMeta, QueryOptions};
 use super::errors::Result;
-use super::request::{get,get_vec};
+use super::request::{get, get_vec};
 
 pub struct CatalogDeregistration {
     pub Node: String,
@@ -42,7 +42,11 @@ impl Catalog for Client {
     }
 
     /// implements https://www.consul.io/api/catalog.html#list-nodes-for-service
-    fn list_nodes_for(&self, service: &str, q: Option<&QueryOptions>) -> Result<(Vec<CatalogNode>, QueryMeta)> {
+    fn list_nodes_for(
+        &self,
+        service: &str,
+        q: Option<&QueryOptions>,
+    ) -> Result<(Vec<CatalogNode>, QueryMeta)> {
         get_vec(
             format!("/v1/catalog/service/{}", service).as_str(),
             &self.config,

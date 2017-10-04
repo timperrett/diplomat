@@ -6,12 +6,12 @@ rust:
 sudo: required
 
 install:
+- sudo apt-get install libssl-dev
 - ./scripts/install-openssl-linux > /dev/null
 - ./scripts/install-protobuf-linux
-- export PATH="$HOME/bin:$PATH"
 
 before_script:
-- which protoc
+- openssl version
 
 script:
 - make release
@@ -20,7 +20,7 @@ script:
 #   provider: releases
 #   skip_cleanup: true
 #   file_glob: true
-#   file: diplomat.tar.gz
+#   file: target/debug/diplomat.tar.gz
 #   api_key:
 #     secure: xxxxxxxxx
 #   on:

@@ -31,8 +31,6 @@ pub struct Config {
     pub wait_time: Option<Duration>,
 }
 
-// use self::request::ResultExt;
-
 impl Config {
     pub fn new() -> Result<Config> {
         HttpClient::new()

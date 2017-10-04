@@ -22,21 +22,19 @@ extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
 extern crate toml;
-
 #[macro_use]
 extern crate error_chain;
-
 #[macro_use]
 extern crate reqwest;
-
 extern crate serde;
 extern crate url;
 
 use clap::{Arg, App, SubCommand};
 use std::process::exit;
 use std::sync::Arc;
-
-// use consul::client::Client as ConsulClient;
+use consul::Client as ConsulClient;
+use consul::catalog::Catalog;
+use std::borrow::Borrow;
 
 fn main() {
     let app = App::new("diplomat")
@@ -88,9 +86,12 @@ fn main() {
 
     match matches.subcommand() {
         ("eds", Some(_)) => {
-            // let ips = consul.catalog.get_nodes("consul".to_string()).unwrap();
-            // consul.catalog.service("consul");
-            println!("{:?}", "ips");
+            let ccc = consul::Config::new().unwrap();
+            let xxx = ConsulClient::new(ccc);
+
+            let nodes = xxx.list_nodes_for("consul", None);
+
+            println!("{:?}", nodes);
         }
         ("serve", Some(_)) => {
             ::server::start(config.unwrap());

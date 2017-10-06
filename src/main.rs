@@ -44,7 +44,7 @@ fn main() {
         )
         .author("Timothy Perrett")
         .arg(
-            Arg::with_name("c")
+            Arg::with_name("config")
                 .long("config")
                 .value_name("config")
                 .help("Path to the configuration for diplomat")
@@ -52,17 +52,34 @@ fn main() {
                 .takes_value(true),
         )
         .subcommand(
-            SubCommand::with_name("eds")
-                .about(
-                    "given a service name, resolve the IPs providing that service",
+            SubCommand::with_name("client")
+                .about("Interact with diplomat using the cli",)
+                .subcommand(
+                    SubCommand::with_name("eds")
+                        .about("given a service name, resolve the IPs providing that service",)
+                        .arg(
+                            Arg::with_name("service-name")
+                                .long("service-name")
+                                .value_name("service-name")
+                                .required(true)
+                                .takes_value(true),
+                        )
                 )
-                .arg(
-                    Arg::with_name("service-name")
-                        .long("service-name")
-                        .value_name("service-name")
-                        .required(true)
-                        .takes_value(true),
+                .subcommand(
+                    SubCommand::with_name("cds")
+                        .about("cds",)
+                        .arg(
+                            Arg::with_name("service-name")
+                                .long("service-name")
+                                .value_name("service-name")
+                                .required(true)
+                                .takes_value(true),
+                        ),
                 ),
+        )
+        .subcommand(
+            SubCommand::with_name("serve")
+                .about("Starts the diplomat server",)
         );
 
     // TIM: Not sure if cloning here is going to cause problems,
@@ -70,7 +87,7 @@ fn main() {
     // too much of a big deal.
     let matches = app.clone().get_matches();
 
-    let config_path: &str = matches.value_of("consul-addr").unwrap_or("diplomat.toml");
+    let config_path: &str = matches.value_of("config").unwrap_or("diplomat.toml");
     info!(
         "==>> attempting to load configuration from '{}'",
         config_path
@@ -82,13 +99,22 @@ fn main() {
     }
 
     match matches.subcommand() {
-        ("eds", Some(_)) => {
-            let ccc = consul::Config::new().unwrap();
-            let xxx = ConsulClient::new(ccc);
-
-            let nodes = xxx.list_nodes_for("consul", None);
-
-            println!("{:?}", nodes);
+        ("client", Some(sub_m)) => {
+            match sub_m.subcommand_name() {
+                Some("eds") => {
+                    let ccc = consul::Config::new().unwrap();
+                    let xxx = ConsulClient::new(ccc);
+                    let nodes = xxx.list_nodes_for("consul", None);
+                    println!("{:?}", nodes);
+                }
+                Some("cds") => {
+                    println!("cds is currently not implemented")
+                }
+                _ => {
+                    let _ = app.clone().print_help();
+                    println!("");
+                }
+            }
         }
         ("serve", Some(_)) => {
             ::server::start(config.unwrap());
@@ -99,3 +125,4 @@ fn main() {
         }
     }
 }
+

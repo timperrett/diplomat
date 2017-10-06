@@ -8,6 +8,6 @@ tar xzvf openssl.tar.gz
 rm openssl.tar.gz
 mv openssl-* openssl
 cd openssl
-./config
+./config --prefix=/opt/openssl --openssldir=/usr/local/ssl
 make
 sudo make install

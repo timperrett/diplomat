@@ -1,6 +1,7 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
 #[allow(unused)]
+#[allow(unused_variables)]
 
 mod api;
 mod server;
@@ -28,6 +29,7 @@ extern crate error_chain;
 extern crate reqwest;
 extern crate serde;
 extern crate url;
+extern crate md5;
 
 use clap::{Arg, App, SubCommand};
 use std::process::exit;
@@ -102,6 +104,9 @@ fn main() {
         error!("==>> failed loading the specified configuration file... exiting.")
     }
 
+    let ccc = consul::Config::new().unwrap();
+    let xxx = ConsulClient::new(ccc);
+
     match matches.subcommand() {
         ("client", Some(sub_m)) => {
             match sub_m.subcommand_name() {
@@ -123,7 +128,7 @@ fn main() {
             }
         }
         ("serve", Some(_)) => {
-            ::server::start(config.unwrap());
+            ::server::start(config.unwrap(), xxx);
         }
         _ => {
             let _ = app.clone().print_help();

@@ -10,12 +10,35 @@ use futures::sync::oneshot;
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 use api::eds_grpc;
 use config::Config;
+use consul::Client;
 
-pub fn start(cfg: Config) {
+use std::string;
+
+#[derive(Copy,Clone)]
+enum MessageType {
+    DiscoveryResponse,
+    Cluster,
+}
+impl string::ToString for MessageType {
+     fn to_string(&self) -> String {
+        match *self {
+            MessageType::DiscoveryResponse =>
+                "type.googleapis.com/envoy.api.v2.DiscoveryResponse".to_string(),
+            MessageType::Cluster =>
+                "type.googleapis.com/envoy.api.v2.Cluster".to_string(),
+        }
+    }
+}
+
+
+pub fn start(cfg: Config, consul: Client) {
     let env = Arc::new(Environment::new(1));
 
     // EDS
-    let eds_instance = eds::Service { config: cfg };
+    let eds_instance = eds::Service {
+        config: cfg,
+        consul: consul
+    };
 
     // let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
 

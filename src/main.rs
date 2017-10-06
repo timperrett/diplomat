@@ -35,6 +35,10 @@ use std::sync::Arc;
 use consul::Client as ConsulClient;
 use consul::catalog::Catalog;
 use std::borrow::Borrow;
+use grpcio::{Environment, ChannelBuilder, UnarySink};
+use config::Config;
+use api::eds_grpc::{EndpointDiscoveryServiceClient};
+use api::discovery::{DiscoveryRequest};
 
 fn main() {
     let app = App::new("diplomat")
@@ -102,10 +106,12 @@ fn main() {
         ("client", Some(sub_m)) => {
             match sub_m.subcommand_name() {
                 Some("eds") => {
-                    let ccc = consul::Config::new().unwrap();
-                    let xxx = ConsulClient::new(ccc);
-                    let nodes = xxx.list_nodes_for("consul", None);
-                    println!("{:?}", nodes);
+                    let env = Arc::new(Environment::new(1));
+                    let channel = ChannelBuilder::new(env).connect(&config.unwrap().client.address);
+                    let client = EndpointDiscoveryServiceClient::new(channel);
+                    let mut dr = DiscoveryRequest::new();
+                    let res = client.fetch_endpoints(dr);
+                    println!("eds {:?}", res);
                 }
                 Some("cds") => {
                     println!("cds is currently not implemented")

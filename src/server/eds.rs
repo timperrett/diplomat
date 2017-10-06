@@ -33,7 +33,14 @@ impl EndpointDiscoveryService for Service {
         req: DiscoveryRequest,
         sink: ::grpcio::UnarySink<DiscoveryResponse>,
     ) {
-        // let resp = resolve_endpoints(&self.client, req.clone());
+        // req is:
+        // pub version_info: ::std::string::String,
+        // pub node: ::protobuf::SingularPtrField<super::base::Node>,
+        // pub resource_names: ::protobuf::RepeatedField<::std::string::String>,
+        // pub type_url: ::std::string::String,
+        // pub response_nonce: ::std::string::String,
+
+        // create_discovery_response()
 
         // let y = match resp {
         //     Ok(x) => sink.success(x),
@@ -87,30 +94,39 @@ use protobuf::{Message,RepeatedField};
 use protobuf::error::ProtobufError;
 use protobuf::well_known_types::Any;
 
+use super::MessageType;
+
+// fn fetch_endpoints()
+
 /// here we're taking any `A` that has a `::protobuf::Message` implementation, such that
 /// we can encode the response (using protobuf); its turtles all the way down.
-fn create_discovery_response<A: Message>(r: Vec<A>, nested_type_url: String) -> DiscoveryResponse {
+fn create_discovery_response<A: Message>(r: Vec<A>, nested_type_url: MessageType) -> DiscoveryResponse {
     let serialized: Vec<Any> = r.iter().map(|x| pack_to_any(x.write_to_bytes(), nested_type_url.clone())).collect();
     let repeated = RepeatedField::from_vec(serialized);
     let mut d = DiscoveryResponse::new();
     d.set_canary(false);
+    //TODO we'll need to set a version here that is the md5 of the payload to faithfully
+    // represent the 'version' to Envoy, but for now we're just hardcoding it, because fuck it.
     d.set_version_info("1".to_string());
+    // This should really be an Enum
     d.set_type_url("type.googleapis.com/envoy.api.v2.DiscoveryResponse".to_string());
     d.set_resources(repeated);
     d
 }
 
-fn pack_to_any(r: Result<Vec<u8>, ProtobufError>, turl: String) -> Any {
+fn pack_to_any(r: Result<Vec<u8>, ProtobufError>, turl: MessageType) -> Any {
     match r {
         Ok(bytes) => any_from_bytes(bytes, turl),
         Err(_)    => Any::new(),
     }
 }
 
-fn any_from_bytes(bytes: Vec<u8>, turl: String) -> Any {
+use std::string::ToString;
+
+fn any_from_bytes(bytes: Vec<u8>, turl: MessageType) -> Any {
     let mut a = Any::new();
     a.set_value(bytes);
-    a.set_type_url(turl);
+    a.set_type_url(turl.to_string());
     a
 }
 

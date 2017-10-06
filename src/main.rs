@@ -1,6 +1,7 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
 #[allow(unused)]
+#[allow(unused_variables)]
 
 mod api;
 mod server;
@@ -28,6 +29,7 @@ extern crate error_chain;
 extern crate reqwest;
 extern crate serde;
 extern crate url;
+extern crate md5;
 
 use clap::{Arg, App, SubCommand};
 use std::process::exit;

@@ -10,12 +10,16 @@ use futures::sync::oneshot;
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 use api::eds_grpc;
 use config::Config;
+use consul::Client;
 
-pub fn start(cfg: Config) {
+pub fn start(cfg: Config, consul: Client) {
     let env = Arc::new(Environment::new(1));
 
     // EDS
-    let eds_instance = eds::Service { config: cfg };
+    let eds_instance = eds::Service { 
+        config: cfg,
+        consul: consul
+    };
 
     // let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
 

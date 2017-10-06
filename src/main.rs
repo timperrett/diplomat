@@ -81,17 +81,18 @@ fn main() {
         error!("==>> failed loading the specified configuration file... exiting.")
     }
 
+    let ccc = consul::Config::new().unwrap();
+    let xxx = ConsulClient::new(ccc);
+
     match matches.subcommand() {
         ("eds", Some(_)) => {
-            let ccc = consul::Config::new().unwrap();
-            let xxx = ConsulClient::new(ccc);
 
             let nodes = xxx.list_nodes_for("consul", None);
 
             println!("{:?}", nodes);
         }
         ("serve", Some(_)) => {
-            ::server::start(config.unwrap());
+            ::server::start(config.unwrap(), xxx);
         }
         _ => {
             let _ = app.clone().print_help();

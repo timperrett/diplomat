@@ -69,18 +69,25 @@ fn main() {
                             "given a service name, resolve the IPs providing that service",
                         )
                         .arg(
-                            Arg::with_name("service-name")
-                                .long("service-name")
-                                .value_name("service-name")
+                            Arg::with_name("cluster")
+                                .long("cluster")
+                                .value_name("cluster")
+                                .required(true)
+                                .takes_value(true),
+                        )
+                        .arg(
+                            Arg::with_name("node")
+                                .long("node")
+                                .value_name("node")
                                 .required(true)
                                 .takes_value(true),
                         ),
                 )
                 .subcommand(
                     SubCommand::with_name("cds").about("cds").arg(
-                        Arg::with_name("service-name")
-                            .long("service-name")
-                            .value_name("service-name")
+                        Arg::with_name("cluster")
+                            .long("cluster")
+                            .value_name("cluster")
                             .required(true)
                             .takes_value(true),
                     ),
@@ -101,30 +108,28 @@ fn main() {
         config_path
     );
 
-    let config = config::load(config_path.to_string());
-    if config.is_err() {
+    let configr = config::load(config_path.to_string());
+    if configr.is_err() {
         error!("==>> failed loading the specified configuration file... exiting.");
         exit(1);
     }
-
-    let ccc = consul::Config::new().unwrap();
-    let xxx = ConsulClient::new(ccc);
+    let config = configr.unwrap();
+    let consul_config = consul::Config::new().unwrap();
+    let consu_client = ConsulClient::new(consul_config);
 
     match matches.subcommand() {
         ("client", Some(sub_m)) => {
             match sub_m.subcommand_name() {
                 Some("eds") => {
-                    let unwrapped = config.unwrap();
-
-                    info!("==>> attempting to call {}", unwrapped.client.address);
+                    info!("==>> attempting to call {}", config.client.address);
 
                     let env = Arc::new(Environment::new(1));
-                    let channel = ChannelBuilder::new(env).connect(unwrapped.client.address.as_str());
+                    let channel = ChannelBuilder::new(env).connect(config.client.address.as_str());
                     let client = EndpointDiscoveryServiceClient::new(channel);
 
                     let mut node = api::base::Node::new();
-                    node.set_id("10.0.10.100".to_string());
-                    node.set_cluster("foo--1-2-3--sdfiqsq".to_string());
+                    node.set_id(matches.value_of("node").unwrap().to_string());
+                    node.set_cluster(matches.value_of("service-cluster").unwrap().to_string());
 
                     let mut dr = DiscoveryRequest::new();
                     dr.set_node(node);
@@ -141,9 +146,8 @@ fn main() {
             }
         }
         ("serve", Some(_)) => {
-            let unwrapped = config.unwrap();
-            info!("==>> booting diplomat server on {}:{}...", unwrapped.server.host, unwrapped.server.port);
-            ::server::start(unwrapped, xxx);
+            info!("==>> booting diplomat server on {}:{}...", config.server.host, config.server.port);
+            ::server::start(config, consu_client);
         }
         _ => {
             let _ = app.clone().print_help();

@@ -11,7 +11,7 @@ This project is implemented wth [Rust](https://www.rust-lang.org/)
 Diplomat is shipped as a standalone native binary and is configured via a TOML configuration file. Each xDS action can be invoked on the command line for debugging purposes, but to run the service in producution you should use sometihing like:
 
 ```
-$ diplomat --config /path/to/config.toml serve
+$ RUST_LOG=info diplomat --config /path/to/config.toml serve
 ```
 
 Using the individual xDS APIs is just as simple, with the additional params passed directly on the command line as arguments:

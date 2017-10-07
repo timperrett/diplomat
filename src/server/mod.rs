@@ -15,7 +15,7 @@ use consul::Client;
 use std::string;
 
 #[derive(Copy, Clone)]
-enum MessageType {
+pub enum MessageType {
     DiscoveryResponse,
     ClusterLoadAssignment,
     LocalityLbEndpoints,
@@ -23,10 +23,13 @@ enum MessageType {
     ClusterLoadAssignmentPolicy,
     Locality,
     Cluster,
+    DiscoveryRequest
 }
 impl string::ToString for MessageType {
     fn to_string(&self) -> String {
         match *self {
+            MessageType::DiscoveryRequest =>
+                "type.googleapis.com/envoy.api.v2.DiscoveryRequest".to_string(),
             MessageType::DiscoveryResponse => {
                 "type.googleapis.com/envoy.api.v2.DiscoveryResponse".to_string()
             }
@@ -54,10 +57,9 @@ pub fn start(cfg: Config, consul: Client) {
 
     // EDS
     let eds_instance = eds::Service {
-        config: cfg,
+        config: cfg.clone(),
         consul: consul,
     };
-
     let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
 
     // CDS
@@ -68,7 +70,7 @@ pub fn start(cfg: Config, consul: Client) {
 
     let mut server = ServerBuilder::new(env)
         .register_service(eds_service)
-        .bind("127.0.0.1", 3000)
+        .bind(cfg.server.host, cfg.server.port)
         .build()
         .unwrap();
     server.start();

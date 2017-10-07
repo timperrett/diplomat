@@ -103,7 +103,8 @@ fn main() {
 
     let config = config::load(config_path.to_string());
     if config.is_err() {
-        error!("==>> failed loading the specified configuration file... exiting.")
+        error!("==>> failed loading the specified configuration file... exiting.");
+        exit(1);
     }
 
     let ccc = consul::Config::new().unwrap();
@@ -113,10 +114,22 @@ fn main() {
         ("client", Some(sub_m)) => {
             match sub_m.subcommand_name() {
                 Some("eds") => {
+                    let unwrapped = config.unwrap();
+
+                    info!("==>> attempting to call {}", unwrapped.client.address);
+
                     let env = Arc::new(Environment::new(1));
-                    let channel = ChannelBuilder::new(env).connect(&config.unwrap().client.address);
+                    let channel = ChannelBuilder::new(env).connect(unwrapped.client.address.as_str());
                     let client = EndpointDiscoveryServiceClient::new(channel);
+
+                    let mut node = api::base::Node::new();
+                    node.set_id("10.0.10.100".to_string());
+                    node.set_cluster("foo--1-2-3--sdfiqsq".to_string());
+
                     let mut dr = DiscoveryRequest::new();
+                    dr.set_node(node);
+                    dr.set_type_url(server::MessageType::DiscoveryRequest.to_string());
+
                     let res = client.fetch_endpoints(dr);
                     println!("eds {:?}", res);
                 }

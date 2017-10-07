@@ -9,7 +9,7 @@ pub struct Config {
 #[derive(Deserialize, Clone)]
 pub struct Server {
     pub host: String,
-    pub port: u32,
+    pub port: u16,
 }
 
 #[derive(Deserialize, Clone)]

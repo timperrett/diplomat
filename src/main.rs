@@ -44,7 +44,7 @@ use api::eds_grpc::EndpointDiscoveryServiceClient;
 use api::discovery::DiscoveryRequest;
 
 fn main() {
-    env_logger::init();
+    let _ = env_logger::init();
 
     let app = App::new("diplomat")
         .version(crate_version!())

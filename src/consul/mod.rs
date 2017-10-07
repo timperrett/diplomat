@@ -32,7 +32,8 @@ pub struct Config {
 
 impl Config {
     pub fn new() -> Result<Config> {
-        HttpClient::new()
+        HttpClient::builder()
+            .build()
             .chain_err(|| "Failed to build reqwest client")
             .map(|client| {
                 Config {

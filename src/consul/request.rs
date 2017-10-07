@@ -43,14 +43,14 @@ pub fn get_vec<R: DeserializeOwned>(
     response
         .chain_err(|| "HTTP request to consul failed")
         .and_then(|mut r| {
-            let j = if *r.status() != StatusCode::NotFound {
+            let j = if r.status() != StatusCode::NotFound {
                 r.json().chain_err(|| "Failed to parse JSON response")?
             } else {
                 Vec::new()
             };
             let x: Option<Result<u64>> = r.headers()
                 .get_raw("X-Consul-Index")
-                .and_then(|bytes| bytes.first())
+                .and_then(|raw| raw.one())
                 .map(|bytes| {
                     str::from_utf8(bytes)
                         .chain_err(|| "Failed to parse valid UT8 for last index")
@@ -99,7 +99,6 @@ pub fn get<R: DeserializeOwned>(
         }
     }
 
-
     let url_str = format!("{}{}", config.address, path);
     let url = Url::parse_with_params(&url_str, params.iter()).chain_err(
         || "Failed to parse URL",
@@ -112,7 +111,7 @@ pub fn get<R: DeserializeOwned>(
             let j = r.json().chain_err(|| "Failed to parse JSON response")?;
             let x: Option<Result<u64>> = r.headers()
                 .get_raw("X-Consul-Index")
-                .and_then(|bytes| bytes.first())
+                .and_then(|raw| raw.one())
                 .map(|bytes| {
                     str::from_utf8(bytes)
                         .chain_err(|| "Failed to parse valid UT8 for last index")
@@ -196,14 +195,15 @@ where
     let url = Url::parse_with_params(&url_str, params.iter()).chain_err(
         || "Failed to parse URL",
     )?;
-    let builder = req(&config.http_client, url);
+    let mut builder = req(&config.http_client, url);
+
     let builder = if let Some(b) = body {
-        builder.json(b)
+        builder.json(b).build()
     } else {
-        builder
+        builder.build()
     };
-    builder
-        .send()
+
+    builder.and_then(|b| config.http_client.execute(b))
         .chain_err(|| "HTTP request to consul failed")
         .and_then(|mut x| x.json().chain_err(|| "Failed to parse JSON"))
         .map(|x| (x, WriteMeta { request_time: Instant::now() - start }))

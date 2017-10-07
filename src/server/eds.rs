@@ -40,15 +40,16 @@ impl EndpointDiscoveryService for Service {
         // pub type_url: ::std::string::String,
         // pub response_nonce: ::std::string::String,
 
-        // create_discovery_response()
-
         // let y = match resp {
         //     Ok(x) => sink.success(x),
         //     Err(_) => sink.fail(RpcStatus::new(RpcStatusCode::Internal, None)),
         // };
 
         // let f = y.map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
-        // ctx.spawn(f)
+
+        let resp = fetch_endpoints();
+        let f = sink.success(resp).map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
+        ctx.spawn(f)
     }
 
     /// Advanced API to allow for multi-dimensional load balancing by remote

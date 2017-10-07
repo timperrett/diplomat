@@ -55,7 +55,7 @@ pub fn start(cfg: Config, consul: Client) {
         consul: consul
     };
 
-    // let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
+    let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);
 
     // CDS
 
@@ -64,7 +64,7 @@ pub fn start(cfg: Config, consul: Client) {
     // RDS
 
     let mut server = ServerBuilder::new(env)
-        // .register_service(eds_service)
+        .register_service(eds_service)
         .bind("127.0.0.1", 3000)
         .build()
         .unwrap();

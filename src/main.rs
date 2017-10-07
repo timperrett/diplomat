@@ -39,8 +39,8 @@ use consul::catalog::Catalog;
 use std::borrow::Borrow;
 use grpcio::{Environment, ChannelBuilder, UnarySink};
 use config::Config;
-use api::eds_grpc::{EndpointDiscoveryServiceClient};
-use api::discovery::{DiscoveryRequest};
+use api::eds_grpc::EndpointDiscoveryServiceClient;
+use api::discovery::DiscoveryRequest;
 
 fn main() {
     let app = App::new("diplomat")
@@ -59,21 +59,12 @@ fn main() {
         )
         .subcommand(
             SubCommand::with_name("client")
-                .about("Interact with diplomat using the cli",)
+                .about("Interact with diplomat using the cli")
                 .subcommand(
                     SubCommand::with_name("eds")
-                        .about("given a service name, resolve the IPs providing that service",)
-                        .arg(
-                            Arg::with_name("service-name")
-                                .long("service-name")
-                                .value_name("service-name")
-                                .required(true)
-                                .takes_value(true),
+                        .about(
+                            "given a service name, resolve the IPs providing that service",
                         )
-                )
-                .subcommand(
-                    SubCommand::with_name("cds")
-                        .about("cds",)
                         .arg(
                             Arg::with_name("service-name")
                                 .long("service-name")
@@ -81,12 +72,20 @@ fn main() {
                                 .required(true)
                                 .takes_value(true),
                         ),
+                )
+                .subcommand(
+                    SubCommand::with_name("cds").about("cds").arg(
+                        Arg::with_name("service-name")
+                            .long("service-name")
+                            .value_name("service-name")
+                            .required(true)
+                            .takes_value(true),
+                    ),
                 ),
         )
-        .subcommand(
-            SubCommand::with_name("serve")
-                .about("Starts the diplomat server",)
-        );
+        .subcommand(SubCommand::with_name("serve").about(
+            "Starts the diplomat server",
+        ));
 
     // TIM: Not sure if cloning here is going to cause problems,
     // but given this is once at the edge of the world it probally isn't
@@ -118,9 +117,7 @@ fn main() {
                     let res = client.fetch_endpoints(dr);
                     println!("eds {:?}", res);
                 }
-                Some("cds") => {
-                    println!("cds is currently not implemented")
-                }
+                Some("cds") => println!("cds is currently not implemented"),
                 _ => {
                     let _ = app.clone().print_help();
                     println!("");
@@ -128,6 +125,7 @@ fn main() {
             }
         }
         ("serve", Some(_)) => {
+            info!("==>> booting diplomat server...");
             ::server::start(config.unwrap(), xxx);
         }
         _ => {
@@ -136,4 +134,3 @@ fn main() {
         }
     }
 }
-

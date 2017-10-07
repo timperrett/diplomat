@@ -15,7 +15,6 @@ use api::discovery::{DiscoveryRequest, DiscoveryResponse};
 use grpcio::{RpcStatus, RpcStatusCode, UnarySinkResult};
 
 impl EndpointDiscoveryService for Service {
-
     /// The resource_names field in DiscoveryRequest specifies a list of clusters
     /// to subscribe to updates for.
     fn stream_endpoints(
@@ -48,7 +47,9 @@ impl EndpointDiscoveryService for Service {
         // let f = y.map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
 
         let resp = fetch_endpoints();
-        let f = sink.success(resp).map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
+        let f = sink.success(resp).map_err(move |e| {
+            error!("failed to reply {:?}: {:?}", req, e)
+        });
         ctx.spawn(f)
     }
 
@@ -91,7 +92,7 @@ impl EndpointDiscoveryService for Service {
 }
 
 use consul::catalog::Catalog;
-use protobuf::{Message,RepeatedField};
+use protobuf::{Message, RepeatedField};
 use protobuf::error::ProtobufError;
 use protobuf::well_known_types::Any;
 
@@ -99,7 +100,7 @@ use super::MessageType;
 use std::string::ToString;
 
 use api::base::Locality;
-use api::eds::{LocalityLbEndpoints,ClusterLoadAssignment};
+use api::eds::{LocalityLbEndpoints, ClusterLoadAssignment};
 
 // TODO: This is going to need to do something more useful that return
 // hardcoded values. This should really talk to consul or whatever
@@ -129,8 +130,13 @@ fn fetch_endpoints() -> DiscoveryResponse {
 /// we can encode the response (using protobuf); its turtles all the way down.
 /// TODO: currently this function assumes success, this should be refactored to properly
 /// handle bad results and take action accordingly.
-fn create_discovery_response<A: Message>(r: Vec<A>, nested_type_url: MessageType) -> DiscoveryResponse {
-    let serialized: Vec<Any> = r.iter().map(|x| pack_to_any(x.write_to_bytes(), nested_type_url.clone())).collect();
+fn create_discovery_response<A: Message>(
+    r: Vec<A>,
+    nested_type_url: MessageType,
+) -> DiscoveryResponse {
+    let serialized: Vec<Any> = r.iter()
+        .map(|x| pack_to_any(x.write_to_bytes(), nested_type_url.clone()))
+        .collect();
     let repeated = RepeatedField::from_vec(serialized);
     let mut d = DiscoveryResponse::new();
     d.set_canary(false);
@@ -146,7 +152,7 @@ fn create_discovery_response<A: Message>(r: Vec<A>, nested_type_url: MessageType
 fn pack_to_any(r: Result<Vec<u8>, ProtobufError>, turl: MessageType) -> Any {
     match r {
         Ok(bytes) => any_from_bytes(bytes, turl),
-        Err(_)    => Any::new(),
+        Err(_) => Any::new(),
     }
 }
 
@@ -156,4 +162,3 @@ fn any_from_bytes(bytes: Vec<u8>, turl: MessageType) -> Any {
     a.set_type_url(turl.to_string());
     a
 }
-

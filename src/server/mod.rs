@@ -14,7 +14,7 @@ use consul::Client;
 
 use std::string;
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 enum MessageType {
     DiscoveryResponse,
     ClusterLoadAssignment,
@@ -25,22 +25,25 @@ enum MessageType {
     Cluster,
 }
 impl string::ToString for MessageType {
-     fn to_string(&self) -> String {
+    fn to_string(&self) -> String {
         match *self {
-            MessageType::DiscoveryResponse =>
-                "type.googleapis.com/envoy.api.v2.DiscoveryResponse".to_string(),
-            MessageType::ClusterLoadAssignment =>
-                "type.googleapis.com/envoy.api.v2.ClusterLoadAssignment".to_string(),
-            MessageType::LocalityLbEndpoints =>
-                "type.googleapis.com/envoy.api.v2.LocalityLbEndpoints".to_string(),
-            MessageType::LbEndpoint =>
-                "type.googleapis.com/envoy.api.v2.LocalityLbEndpoints".to_string(),
-            MessageType::ClusterLoadAssignmentPolicy =>
-                "type.googleapis.com/envoy.api.v2.ClusterLoadAssignment_Policy".to_string(),
-            MessageType::Locality =>
-                "type.googleapis.com/envoy.api.v2.Locality".to_string(),
-            MessageType::Cluster =>
-                "type.googleapis.com/envoy.api.v2.Cluster".to_string(),
+            MessageType::DiscoveryResponse => {
+                "type.googleapis.com/envoy.api.v2.DiscoveryResponse".to_string()
+            }
+            MessageType::ClusterLoadAssignment => {
+                "type.googleapis.com/envoy.api.v2.ClusterLoadAssignment".to_string()
+            }
+            MessageType::LocalityLbEndpoints => {
+                "type.googleapis.com/envoy.api.v2.LocalityLbEndpoints".to_string()
+            }
+            MessageType::LbEndpoint => {
+                "type.googleapis.com/envoy.api.v2.LocalityLbEndpoints".to_string()
+            }
+            MessageType::ClusterLoadAssignmentPolicy => {
+                "type.googleapis.com/envoy.api.v2.ClusterLoadAssignment_Policy".to_string()
+            }
+            MessageType::Locality => "type.googleapis.com/envoy.api.v2.Locality".to_string(),
+            MessageType::Cluster => "type.googleapis.com/envoy.api.v2.Cluster".to_string(),
         }
     }
 }
@@ -52,7 +55,7 @@ pub fn start(cfg: Config, consul: Client) {
     // EDS
     let eds_instance = eds::Service {
         config: cfg,
-        consul: consul
+        consul: consul,
     };
 
     let eds_service = eds_grpc::create_endpoint_discovery_service(eds_instance);

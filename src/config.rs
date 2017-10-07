@@ -2,7 +2,7 @@
 #[derive(Deserialize, Clone)]
 pub struct Config {
     pub consul: Consul,
-    pub client: ClientConfig
+    pub client: ClientConfig,
 }
 
 #[derive(Deserialize, Clone)]
@@ -17,7 +17,7 @@ pub struct Consul {
 
 #[derive(Deserialize, Clone)]
 pub struct ClientConfig {
-    pub address: String
+    pub address: String,
 }
 
 use toml;

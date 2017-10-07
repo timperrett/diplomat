@@ -95,11 +95,39 @@ use protobuf::error::ProtobufError;
 use protobuf::well_known_types::Any;
 
 use super::MessageType;
+use std::string::ToString;
 
-// fn fetch_endpoints()
+use api::base::Locality;
+use api::eds::{LocalityLbEndpoints,ClusterLoadAssignment};
+
+// TODO: This is going to need to do something more useful that return
+// hardcoded values. This should really talk to consul or whatever
+// abstraction we figure out.
+fn fetch_endpoints() -> DiscoveryResponse {
+    let mut loc = Locality::new();
+    loc.set_region("us-west-1".to_string());
+    loc.set_zone("a".to_string());
+
+    let mut az1 = LocalityLbEndpoints::new();
+    az1.set_locality(loc);
+
+    let mut azs = Vec::new();
+    azs.push(az1);
+
+    let mut cla = ClusterLoadAssignment::new();
+    cla.set_cluster_name("foo".to_string());
+    cla.set_endpoints(RepeatedField::from_vec(azs));
+
+    let mut items = Vec::new();
+    items.push(cla);
+
+    create_discovery_response(items, MessageType::ClusterLoadAssignment)
+}
 
 /// here we're taking any `A` that has a `::protobuf::Message` implementation, such that
 /// we can encode the response (using protobuf); its turtles all the way down.
+/// TODO: currently this function assumes success, this should be refactored to properly
+/// handle bad results and take action accordingly.
 fn create_discovery_response<A: Message>(r: Vec<A>, nested_type_url: MessageType) -> DiscoveryResponse {
     let serialized: Vec<Any> = r.iter().map(|x| pack_to_any(x.write_to_bytes(), nested_type_url.clone())).collect();
     let repeated = RepeatedField::from_vec(serialized);
@@ -109,7 +137,7 @@ fn create_discovery_response<A: Message>(r: Vec<A>, nested_type_url: MessageType
     // represent the 'version' to Envoy, but for now we're just hardcoding it, because fuck it.
     d.set_version_info("1".to_string());
     // This should really be an Enum
-    d.set_type_url("type.googleapis.com/envoy.api.v2.DiscoveryResponse".to_string());
+    d.set_type_url(MessageType::DiscoveryResponse.to_string());
     d.set_resources(repeated);
     d
 }
@@ -120,8 +148,6 @@ fn pack_to_any(r: Result<Vec<u8>, ProtobufError>, turl: MessageType) -> Any {
         Err(_)    => Any::new(),
     }
 }
-
-use std::string::ToString;
 
 fn any_from_bytes(bytes: Vec<u8>, turl: MessageType) -> Any {
     let mut a = Any::new();

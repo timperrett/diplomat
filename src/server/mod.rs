@@ -17,6 +17,11 @@ use std::string;
 #[derive(Copy,Clone)]
 enum MessageType {
     DiscoveryResponse,
+    ClusterLoadAssignment,
+    LocalityLbEndpoints,
+    LbEndpoint,
+    ClusterLoadAssignmentPolicy,
+    Locality,
     Cluster,
 }
 impl string::ToString for MessageType {
@@ -24,6 +29,16 @@ impl string::ToString for MessageType {
         match *self {
             MessageType::DiscoveryResponse =>
                 "type.googleapis.com/envoy.api.v2.DiscoveryResponse".to_string(),
+            MessageType::ClusterLoadAssignment =>
+                "type.googleapis.com/envoy.api.v2.ClusterLoadAssignment".to_string(),
+            MessageType::LocalityLbEndpoints =>
+                "type.googleapis.com/envoy.api.v2.LocalityLbEndpoints".to_string(),
+            MessageType::LbEndpoint =>
+                "type.googleapis.com/envoy.api.v2.LocalityLbEndpoints".to_string(),
+            MessageType::ClusterLoadAssignmentPolicy =>
+                "type.googleapis.com/envoy.api.v2.ClusterLoadAssignment_Policy".to_string(),
+            MessageType::Locality =>
+                "type.googleapis.com/envoy.api.v2.Locality".to_string(),
             MessageType::Cluster =>
                 "type.googleapis.com/envoy.api.v2.Cluster".to_string(),
         }

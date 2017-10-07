@@ -2,6 +2,7 @@
 #[derive(Deserialize, Clone)]
 pub struct Config {
     pub consul: Consul,
+    pub client: ClientConfig
 }
 
 #[derive(Deserialize, Clone)]
@@ -12,6 +13,11 @@ pub struct Consul {
     pub username: String,
     pub password: String,
     pub token: String,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct ClientConfig {
+    pub address: String
 }
 
 use toml;

@@ -5,3 +5,5 @@ datacenter = "c"
 username = "d"
 password = "e"
 token = "f"
+[client]
+address = "127.0.0.1:9000"

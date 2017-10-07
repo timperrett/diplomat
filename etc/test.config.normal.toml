@@ -1,3 +1,7 @@
+[server]
+host = "127.0.0.1"
+port = 9000
+
 [consul]
 ssl = true
 address = "b"
@@ -5,5 +9,6 @@ datacenter = "c"
 username = "d"
 password = "e"
 token = "f"
+
 [client]
 address = "127.0.0.1:9000"

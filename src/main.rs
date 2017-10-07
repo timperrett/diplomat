@@ -125,8 +125,9 @@ fn main() {
             }
         }
         ("serve", Some(_)) => {
-            info!("==>> booting diplomat server...");
-            ::server::start(config.unwrap(), xxx);
+            let unwrapped = config.unwrap();
+            info!("==>> booting diplomat server on {}:{}...", unwrapped.server.host, unwrapped.server.port);
+            ::server::start(unwrapped, xxx);
         }
         _ => {
             let _ = app.clone().print_help();

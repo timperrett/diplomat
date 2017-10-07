@@ -3,6 +3,13 @@
 pub struct Config {
     pub consul: Consul,
     pub client: ClientConfig,
+    pub server: Server,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct Server {
+    pub host: String,
+    pub port: u32,
 }
 
 #[derive(Deserialize, Clone)]

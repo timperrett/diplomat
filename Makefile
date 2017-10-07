@@ -46,3 +46,7 @@ vendor:
 
 consul:
 	consul agent -ui -server -advertise 127.0.0.1 -dev -data-dir target
+
+format:
+	cargo fmt && \
+	find . -name *.bk | xargs -L1 rm

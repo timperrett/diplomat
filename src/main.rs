@@ -13,6 +13,7 @@ mod config_test;
 
 #[macro_use]
 extern crate log;
+extern crate env_logger;
 #[macro_use]
 extern crate clap;
 extern crate grpcio;
@@ -43,6 +44,8 @@ use api::eds_grpc::EndpointDiscoveryServiceClient;
 use api::discovery::DiscoveryRequest;
 
 fn main() {
+    env_logger::init();
+
     let app = App::new("diplomat")
         .version(crate_version!())
         .about(

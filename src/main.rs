@@ -119,17 +119,17 @@ fn main() {
 
     match matches.subcommand() {
         ("client", Some(sub_m)) => {
-            match sub_m.subcommand_name() {
-                Some("eds") => {
+            match sub_m.subcommand() {
+                ("eds", Some(sub_client)) => {
                     info!("==>> attempting to call {}", config.client.address);
 
                     let env = Arc::new(Environment::new(1));
-                    let channel = ChannelBuilder::new(env).connect(config.client.address.as_str());
+                    let channel = ChannelBuilder::new(env).connect(&config.client.address);
                     let client = EndpointDiscoveryServiceClient::new(channel);
 
                     let mut node = api::base::Node::new();
-                    node.set_id(matches.value_of("node").unwrap().to_string());
-                    node.set_cluster(matches.value_of("service-cluster").unwrap().to_string());
+                    node.set_id(sub_client.value_of("node").unwrap().to_string());
+                    node.set_cluster(sub_client.value_of("cluster").unwrap().to_string());
 
                     let mut dr = DiscoveryRequest::new();
                     dr.set_node(node);
@@ -138,7 +138,7 @@ fn main() {
                     let res = client.fetch_endpoints(dr);
                     println!("eds {:?}", res);
                 }
-                Some("cds") => println!("cds is currently not implemented"),
+                ("cds", Some(_)) => println!("cds is currently not implemented"),
                 _ => {
                     let _ = app.clone().print_help();
                     println!("");
